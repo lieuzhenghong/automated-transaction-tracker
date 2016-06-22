@@ -1,6 +1,6 @@
 # SMS Reminder Service
 
-**version 0.10**
+**version 0.1.0**
 
 Version 0.10 is the first version ready to be deployed. Here is the current
 feature set as of this version:
@@ -30,4 +30,3 @@ feature set as of this version:
   * Seven (7) days before loan expiry
   * Three (3) days before loan expiry
   * Loan expires
-
