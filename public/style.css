@@ -1,0 +1,144 @@
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font: 16px/1 sans-serif;
+  line-height: 1.4em;
+}
+
+h1, h2, h3, h4, p, blockquote,figure, ol, ul {
+  margin: 0;
+  padding: 0;
+}
+
+main, li {
+  display: block;
+}
+
+h1, h2, h3, h4 {
+  font-size: inherit;
+}
+
+strong{
+  font-weight: bold;
+}
+
+a, button {
+  color: inherit;
+  transition: .3s;
+}
+
+a {
+  text-decoration: none;
+}
+
+button, input[type="submit"] {
+  overflow: visible;
+  border: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  background: none;
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border: 0;
+}
+
+/* ---------------
+ *
+ * Reset ends here
+ *
+ * --------------- */
+  
+h1 {
+  font-size: 2em;
+  line-height: 2em;
+}
+
+#content {
+  font-family: 'Arial';
+  text-align: center;
+  max-width: 100%;
+}
+
+#body {
+  margin: 0 auto;
+  /* background-color: rgba(200,200,200,0.5); */
+}
+
+@media screen and (min-width: 600px){
+  #body {
+    width: 480px;
+  }
+}
+
+input[type="text"], input[type="tel"], input[type="number"]{
+  height: 50px;
+  display: block;
+  margin: 0 auto;
+  width: 90%;
+  border: 1px dashed grey;
+  font-size: inherit;
+}
+
+input:invalid {
+  border: 1px solid red;
+}
+
+input:valid {
+  border: 1px solid green;
+}
+
+button, input[type="submit"] {
+  width: 150px;
+  height: 50px;
+  padding: 10px;
+  border: 1px solid grey;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+label {
+  font-weight: bold;  
+  line-height: 2em;
+  display: block;
+}
+
+.home_button {
+  background-color: rgba(0,200,0,0.8);
+  display: block;
+  width: 100%;
+}
+
+input[type="submit"] {
+}
+
+table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  border: 1px solid grey;
+  max-width: 90%;
+}
+table td, table th{
+  padding: 1em 0.5em 1em 0.5em;
+  border: 1px solid grey;
+}
+
+#half-width {
+  display: inline-block;
+  width: 40%;
+}
+
+select {
+  height: 50px;
+  width: 45%;
+  font: inherit;
+  border: 1px solid grey;
+}
