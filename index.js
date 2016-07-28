@@ -253,45 +253,51 @@ function send_message(err, transactions, days) {
   console.log(transactions);
   console.log(days);
 
-  var message_0 = ("Dear " + trans.name + ", the loan you made on " + trans.date + 
-                  "is due today. Please return the items loaned to Log Branch.");
-  var message_3 = ("Dear " + trans.name + ", the loan you made on " + 
-                  trans.date + "is due in three days.");
-  var message_7 = ("Dear " + trans.name + ", the loan you made on " + 
-                  trans.date + "is due in seven days.");
-
-  transactions.forEach(function(transaction) {
-    if (days <= 0) {
-      client.sendMessage({
-        to: ("+65"+trans.phone_number),
-        from: TWILIO_TEST_NO,
-        body: message_0
-      }, (err, text) => {
-        console.log('you sent: ' + text.body);
-        console.log('status of msg: ' + text.status);
-      });
-    }
-    else if (days === 3) {
-      client.sendMessage({
-        to: ("+65"+trans.phone_number),
-        from: TWILIO_TEST_NO,
-        body: message_3
-      }, (err, text) => {
-        console.log('you sent: ' + text.body);
-        console.log('status of msg: ' + text.status);
-      });
-    }
-    else if (days === 7){
-       client.sendMessage({
-        to: ("+65"+trans.phone_number),
-        from: TWILIO_TEST_NO,
-        body: message_7
-      }, (err, text) => {
-        console.log('you sent: ' + text.body);
-        console.log('status of msg: ' + text.status);
-      }); 
-    }
-  });
+  // short-circuits the code if the transactions array is empty, the reason for
+  // this is because it will try and send a message to an empty trans array and
+  // thus get trans does not exist
+  
+  if ( transactions == 0 ) {
+    console.log('no transactions fulfill criteria; not sending any SMSes')
+  }
+  
+  else {
+    transactions.forEach(function(trans) {
+      if (days <= 0) {
+        client.sendMessage({
+          to: ("+65"+trans.phone_number),
+          from: TWILIO_TEST_NO,
+          body: ("Dear " + trans.name + ", the loan you made on " + trans.date + 
+                "is due today. Please return the items loaned to Log Branch.")        
+          }, (err, text) => {
+          console.log('you sent: ' + text.body);
+          console.log('status of msg: ' + text.status);
+        });
+      }
+      else if (days === 3) {
+        client.sendMessage({
+          to: ("+65"+trans.phone_number),
+          from: TWILIO_TEST_NO,
+          body: ("Dear " + trans.name + ", the loan you made on " + 
+                trans.date + "is due in three days.")        
+          }, (err, text) => {
+          console.log('you sent: ' + text.body);
+          console.log('status of msg: ' + text.status);
+        });
+      }
+      else if (days === 7){
+         client.sendMessage({
+          to: ("+65"+trans.phone_number),
+          from: TWILIO_TEST_NO,
+          body: ("Dear " + trans.name + ", the loan you made on " + 
+                trans.date + "is due in seven days.")
+        }, (err, text) => {
+          console.log('you sent: ' + text.body);
+          console.log('status of msg: ' + text.status);
+        }); 
+      }
+    });
+  }
 }
 
 function get_all_trans_expiring_in(days) {
@@ -299,6 +305,7 @@ function get_all_trans_expiring_in(days) {
     find().
     where('expiry_date').
     lt( (Date.now()) + (1000*3600*24*days) ).
+    //this is obviously broken
     gt( (Date.now()) + (1000*3600*24*(days-1)) ).
     where('returned').equals(false).
     exec(function (err, doc) {
@@ -306,17 +313,18 @@ function get_all_trans_expiring_in(days) {
       );
 }
 
-var CronJob = require('cron').CronJob;
-var job = new CronJob({
-  cronTime: '0 0 8 * * *', 
-  //cronTime: '* * * * * *',
-  onTick: function(){
-    console.log('calling');
-    get_all_trans_expiring_in(7);
-    get_all_trans_expiring_in(3);
-    get_all_trans_expiring_in(0);
-  },
-  start: true
+var schedule = require('node-schedule')
+
+var rule = new schedule.RecurrenceRule();
+  rule.hour = 8;
+  rule.minute = 0;
+  //rule.second = 0;
+
+var j = schedule.scheduleJob(rule, function(){
+  console.log("cronjob called")
+  get_all_trans_expiring_in(7);
+  get_all_trans_expiring_in(3);
+  get_all_trans_expiring_in(0);
 });
 
 function test(number) {
