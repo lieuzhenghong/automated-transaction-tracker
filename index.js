@@ -152,7 +152,7 @@ app.post('/trans', (req, res) => {
     else {
       client.sendMessage({
           to: ("+65"+ tr.phone_number),
-          from: TWILIO_TEST_NO,
+          from: config.TWILIO_TEST_NO,
           body: ("Dear " + tr.name + ', Your loan is due on ' +
                 (tr.expiry_date).toString() )
         }, (err, text) => {
@@ -184,7 +184,7 @@ app.put('/trans/*/renew', (req,res) => {
       console.log(trans);
       client.sendMessage({
         to: ("+65"+ trans.phone_number),
-        from: TWILIO_TEST_NO,
+        from: config.TWILIO_TEST_NO,
         body: ("Dear" + trans.name , "You just renewed your loan. It is due on " +
         trans.expiry_date.toString())
       }, (err, text) => {
@@ -260,7 +260,7 @@ function send_message(err, transactions, days) {
       if (days <= 0) {
         client.sendMessage({
           to: ("+65"+trans.phone_number),
-          from: TWILIO_TEST_NO,
+          from: config.TWILIO_TEST_NO,
           body: ("Dear " + trans.name + ", the loan you made on " + trans.date + 
                 "is due today. Please return the items loaned to Log Branch.")        
           }, (err, text) => {
@@ -271,7 +271,7 @@ function send_message(err, transactions, days) {
       else if (days === 3) {
         client.sendMessage({
           to: ("+65"+trans.phone_number),
-          from: TWILIO_TEST_NO,
+          from: config.TWILIO_TEST_NO,
           body: ("Dear " + trans.name + ", the loan you made on " + 
                 trans.date + "is due in three days.")        
           }, (err, text) => {
@@ -282,7 +282,7 @@ function send_message(err, transactions, days) {
       else if (days === 7){
          client.sendMessage({
           to: ("+65"+trans.phone_number),
-          from: TWILIO_TEST_NO,
+          from: config.TWILIO_TEST_NO,
           body: ("Dear " + trans.name + ", the loan you made on " + 
                 trans.date + "is due in seven days.")
         }, (err, text) => {
@@ -324,7 +324,7 @@ var j = schedule.scheduleJob(rule, function(){
 function test(number) {
  client.sendMessage({
   to: ( "+65"+ number.toString() ),
-  from: TWILIO_TEST_NO,
+  from: config.TWILIO_TEST_NO,
   body: "Hi! Welcome to Lieu's Loan Tracker service."
 }, (err, text) => {
   console.log('you sent: ' + text.body);
