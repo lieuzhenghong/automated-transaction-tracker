@@ -14,15 +14,9 @@ var laundry_db;
  * TWILIO
  * ---------- */
 
-const TWILIO_TEST_ACCOUNT_SID = 'AC194829c156517ad2a729aa27d3e1b713';
-const TWILIO_TEST_AUTH_TOKEN = '696c56ace95895fb6765a1b0d5d06427';
-const TWILIO_ACCOUNT_SID = 'AC69cddba1cb0e2b3761daee88bf150157';
-const TWILIO_AUTH_TOKEN = '0d681f6d2eca9a7ed9343c972a9eac5c';
-//const TWILIO_TEST_NO = '15005550006';
-const TWILIO_TEST_NO = '14439917746'; 
+var config = require('./config.js');
 
-//var client = require('twilio')(TWILIO_TEST_ACCOUNT_SID, TWILIO_TEST_AUTH_TOKEN);
-var client = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+var client = require('twilio')(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_TOKEN);
 
 /* --------------------------------------------
  *
