@@ -6,8 +6,8 @@ var MongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var assert = require('assert');
-var url = 'mongodb://localhost:27017/laundry_test';
-var laundry_db;
+var url = 'mongodb://localhost:27017/transactions_db';
+var transactions_db;
 
 
 /* ------------
@@ -15,7 +15,6 @@ var laundry_db;
  * ---------- */
 
 var config = require('./config.js');
-
 var client = require('twilio')(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_TOKEN);
 
 /* --------------------------------------------
@@ -26,7 +25,7 @@ var client = require('twilio')(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_TOK
 
 MongoClient.connect(url, (err,db) => {
   assert.equal(null, err);
-  laundry_db = db;
+  transactions_db = db;
 });
 
 mongoose.connect(url);
@@ -75,11 +74,6 @@ var transSchema = mongoose.Schema({
     type: Date,
     default: (Date.parse(normalise_date(new Date())) + (60*60*24*30*1000)) //1000 for milliseconds
   },
-  days_till_expiry: {
-    type: Number,
-    default: days_till_expiry(Date.parse(normalise_date(new Date())) + 
-                              (60*60*24*30*1000))
-  },
   returned: {
     type: Boolean,
     default: false
@@ -89,6 +83,12 @@ var transSchema = mongoose.Schema({
   items: [itemSchema]
 });
 
+var storeSchema = mongoose.Schema({
+  name: String,
+  transactions: [transSchema]
+})
+
+var Store = mongoose.model('Store', storeSchema);
 var Trans = mongoose.model("Transaction", transSchema);
 var Item = mongoose.model('Item', itemSchema);
 
@@ -101,6 +101,38 @@ app.listen(3001, () => {
  * Actual transactions
  *
  * ------------------------------------------- */
+
+app.get('/store', (req, res) => {
+  Store.find((err, stores) => {
+    if (err) return console.error(err);
+    console.log(stores);
+    res.send(stores);
+  })
+});
+
+app.get('/store/*/trans', (req, res) => {
+  var id = req.url.split('/')[2];
+  Store.findOne({'_id': id}, (err, store) => {
+    if ( err ) console.error(err);
+    else {
+      console.log(store.transactions);
+      res.send(store.transactions);
+    }
+  });
+});
+
+app.post('/store', (req, res) => {
+  var store = req.body;
+  console.log(store);
+
+  var sto = new Store(store);
+  sto.save( (err) => {
+    if (err) return console.error(err);
+    else {
+      res.send(sto);
+    }
+  });
+});
 
 app.get('/trans', (req,res) => {
   Trans.find((err, transactions) => {
@@ -224,6 +256,11 @@ app.get('/test_message*', (req,res) => {
   res.send('Sending a message to: ' + req.query.phone_number);
 });
 
+app.get('/db_reset', (req,res) => {
+  database_reset();
+  res.send('OK');
+})
+
 
 /* --------------------
  *
@@ -331,3 +368,51 @@ function test(number) {
   console.log('status of msg: ' + text.status);
 }); 
 }
+
+
+function database_reset() {
+  MongoClient.connect(url, (err, db) => {
+    transactions_db = db;
+    transactions_db.collection('stores').deleteMany({});
+    transactions_db.collection('transactions').deleteMany({});
+    console.log("dropped");
+    add_data();
+  });
+
+  function add_data() {
+
+    var trans = {
+      date: Date.now(),
+      expiry_date: ((Date.now()) + 1000 * 60 * 60 * 24 * 7),     
+      returned: false,
+      items: [],
+      phone_number: '82882107',
+      name: '3SG Ong Sheng Ping'
+    }
+
+    var tra = new Trans(trans);
+    tra.save( (err) => {
+      if (err) return console.error(err);
+      else {
+        // console.log(tra);
+        console.log('trans saved');
+      }
+    });
+    
+    var store =  {
+      name: "GE Store",
+      transactions: [tra]
+    };
+
+    var sto = new Store(store);
+    sto.save( (err) => {
+      if (err) return console.error(err);
+      else {
+        console.log(sto);
+      }
+    });
+
+  }
+
+}
+

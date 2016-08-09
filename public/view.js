@@ -68,13 +68,14 @@ dispatcher.registerEvent('send_transaction_details');
 //that takes in a JSON object as a parameter. This JSON object is the 
 //transaction. Then the Detail View Table will update. 
 dispatcher.registerEvent('update_transaction')
+dispatcher.registerEvent('send_store_transactions');
+
 
 /* ----------------------------
  *
  * Various navigation buttons
  *
  * -------------------------- */
-
 var Add_Transaction_Button = React.createClass({
   handleClick: function() {
     active_page = 'Add_Transaction_Form_Page';
@@ -160,12 +161,84 @@ var Home_Page = React.createClass({
     return (
       <div class="page">
       <h1>Loan Tracker</h1>
-      <Add_Transaction_Button />
-      <Show_Transactions_Button />
+      <Stores_Table request="/store" />
       </div>
     )
 
     }
+  }
+})
+
+
+/* --------------------
+ * 
+ * Stores table and page
+ * 
+ * -------------------- */
+
+
+var Stores_Table = React.createClass({
+  getInitialState: function() {
+    return ({
+      stores: []
+    });
+  },
+  componentDidMount: function() {
+    var get = new XMLHttpRequest();
+    get.open("GET", this.props.request);
+    get.onreadystatechange = () => {
+      if (get.readyState == 4) {
+        this.setState({
+          stores: JSON.parse(get.responseText)
+        })
+      }
+    }
+    get.send();
+  },
+  render: function() {
+    var rows = [];
+    for (var i = 0; i < this.state.stores.length; i++) {
+      //console.log(this.state.transactions[i]);
+      rows.push(<Stores_Table_Row key={i} values={this.state.stores[i]}/>)
+    }
+    return(
+        <table>
+          <thead>
+            <tr>
+              <th> Store </th>
+              <th> Store ID </th>
+            </tr>
+          </thead>
+          <tbody>
+           {rows}
+          </tbody>
+        </table>
+        )
+  }
+})
+
+var Stores_Table_Row = React.createClass({
+  handleClick: function () {
+    var req = new XMLHttpRequest();
+    req.open("GET", ("/store/" + this.props.values._id + "/trans"));
+    req.onreadystatechange = () => {
+      if (req.readyState == 4) {
+        var res = JSON.parse(req.responseText);
+        // I have to pass this "res" to the realpage or trans view page
+        active_page = 'Transactions_View_Page';
+        dispatcher.dispatchEvent('send_store_transactions', res);
+        realPage.setState({active_page: active_page});
+      }
+    }
+    req.send();
+  },
+  render: function() {
+    return (
+        <tr onClick = {this.handleClick}>
+        <td>{ this .props.values.name }</td>
+        <td>{ this.props.values._id }</td>
+        </tr>
+        )
   }
 })
 
@@ -176,16 +249,19 @@ var Home_Page = React.createClass({
  * --------------------- */ 
 
 var Transactions_View_Page = React.createClass({
-  render: () => {
+  render: function () {
     if (active_page != "Transactions_View_Page") {
       return(null);
     }
     else {
+      // console.log(this.props);
+      // console.log(this.props.transactions);
       // When this page loads
       return  (
         <div class="page">
         <h1> Loans overview </h1>
-        <Transactions_Table />
+        <Transaction_Table transactions = {this.props.transactions} />
+        <Add_Item_Button />
         <Back_to_Home_Button />
         </div>
       )
@@ -193,43 +269,19 @@ var Transactions_View_Page = React.createClass({
   }
 })
 
-var Transactions_Table = React.createClass({
-  getInitialState: function () {
-    return({
-      transactions: []
-    })
-  },
-  componentDidMount: function() {
-    var get = new XMLHttpRequest();
-    get.open("GET", "/trans");
-    get.onreadystatechange = () => {
-      if (get.readyState == 4) {
-        this.setState({
-          transactions: JSON.parse(get.responseText)
-        })
-      }
-    }
-    get.send();
-  },
+var Transaction_Table = React.createClass({
   render: function() {
-
+    // console.log(this.props.transactions);
     var rows = [];
-    for (var i = 0; i < this.state.transactions.length; i++) {
+    for (var i = 0; i < this.props.transactions.length; i++) {
       //console.log(this.state.transactions[i]);
-      rows.push(<Transactions_Table_Row key={i} values={this.state.transactions[i]}/>)
+      rows.push(<Table_Row key={i} values={this.props.transactions[i]}/>)
     }
  
     
     return (
       <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Expiry date</th>
-            <th>Name</th>
-            <th>Phone number</th>
-          </tr>
-        </thead>
+      <Transaction_Table_Header_Row />
         <tbody>
         {rows}
         </tbody>
@@ -238,8 +290,23 @@ var Transactions_Table = React.createClass({
   }
 });
 
+var Transaction_Table_Header_Row = React.createClass({
+  render: function(){
+    return (
+      <thead>
+        <tr>
+        <th>Date</th>
+        <th>Expiry Date</th>
+        <th>Name</th>
+        <th>Phone Number</th>
+        </tr>
+      </thead>
+    )
+  }
+})
 
-var Transactions_Table_Row = React.createClass({
+
+var Table_Row = React.createClass({
   handleClick: function() {
     active_page = 'Transaction_View_Detail_Page';
 
@@ -635,21 +702,32 @@ var Page = React.createClass({
   getInitialState: function (){
     return({
       active_page: active_page,
+      store_transactions: {}, // Transactions of the active store.
       transaction_shown: {}
     })
   },
   componentDidMount: function() {
+
+    dispatcher.addEventListener('send_store_transactions', (store_trans) => {
+      this.state.store_transactions = store_trans;
+      // console.log(this.state.store_transactions);
+      this.setState({
+        store_transactions: this.state.store_transactions
+      });
+    });
+    
     dispatcher.addEventListener('send_transaction_details',
       (transaction) => {
           this.state.transaction_shown = transaction;
           this.setState({
             transaction_shown: this.state.transaction_shown
           });
-          console.log('called');
-          console.log(this);
-          console.log(this.state.transaction_shown);
+          // console.log('called');
+          // console.log(this);
+          // console.log(this.state.transaction_shown);
           //console.log(dispatcher.state.transaction_shown);
     });
+    
     dispatcher.addEventListener('update_transaction', (action) => {
       var update = new XMLHttpRequest();
       // console.log(this.state.transaction_shown._id);
@@ -677,8 +755,8 @@ var Page = React.createClass({
       <div id ="body">
       <Home_Page />
       <Add_Transaction_Form_Page/>
-      <Transactions_View_Page/>
-      <Transaction_View_Detail_Page transaction={this.state.transaction_shown}/>
+      <Transactions_View_Page transactions={this.state.store_transactions} />
+      <Transaction_View_Detail_Page transaction={this.state.transaction_shown} />
       </div>
     )
   }
