@@ -92,6 +92,20 @@ var Add_Transaction_Button = React.createClass({
   }
 });
 
+var Add_Store_Button = React.createClass({
+  onClick: function() {
+    
+  }
+  render: function() {
+    return(
+        <button className="add_store_button" 
+        onClick = {this.handleClick} >
+        Add new store
+        </button>
+        )
+  }
+})
+
 var Show_Transactions_Button = React.createClass({
   handleClick: function() {
     active_page = 'Transactions_View_Page';
@@ -162,6 +176,7 @@ var Home_Page = React.createClass({
       <div class="page">
       <h1>Loan Tracker</h1>
       <Stores_Table request="/store" />
+      <Add_Store_Button/>
       </div>
     )
 
