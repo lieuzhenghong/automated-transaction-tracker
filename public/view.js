@@ -95,7 +95,7 @@ var Add_Transaction_Button = React.createClass({
 var Add_Store_Button = React.createClass({
   onClick: function() {
     
-  }
+  },
   render: function() {
     return(
         <button className="add_store_button" 
