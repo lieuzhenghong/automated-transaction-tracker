@@ -276,7 +276,7 @@ var Transactions_View_Page = React.createClass({
         <div class="page">
         <h1> Loans overview </h1>
         <Transaction_Table transactions = {this.props.transactions} />
-        <Add_Item_Button />
+        <Add_Transaction_Button />
         <Back_to_Home_Button />
         </div>
       )
