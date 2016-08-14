@@ -86,7 +86,7 @@ var transSchema = mongoose.Schema({
 var storeSchema = mongoose.Schema({
   name: String,
   transactions: [transSchema]
-})
+});
 
 var Store = mongoose.model('Store', storeSchema);
 var Trans = mongoose.model("Transaction", transSchema);
@@ -105,9 +105,9 @@ app.listen(3001, () => {
 app.get('/store', (req, res) => {
   Store.find((err, stores) => {
     if (err) return console.error(err);
-    console.log(stores);
+    // console.log(stores);
     res.send(stores);
-  })
+  });
 });
 
 app.get('/store/*/trans', (req, res) => {
@@ -134,16 +134,9 @@ app.post('/store', (req, res) => {
   });
 });
 
-app.get('/trans', (req,res) => {
-  Trans.find((err, transactions) => {
-    if (err) return console.error(err);
-    console.log(transactions);
-    res.send(transactions);
-  }); 
-});
-
-app.post('/trans', (req, res) => {
+app.post('/store/*/trans', (req, res) => {
   console.log('received');
+  var id = req.url.split('/')[2];
   var ed_n =  req.body.expiry_date_number;
   var ed_s = req.body.expiry_date_selector;
   const ms = 1000*60*60*24;
@@ -182,18 +175,36 @@ app.post('/trans', (req, res) => {
       return console.error(err);
     }    
     else {
-      client.sendMessage({
-          to: ("+65"+ tr.phone_number),
-          from: config.TWILIO_TEST_NO,
-          body: ("Dear " + tr.name + ', Your loan is due on ' +
-                (tr.expiry_date).toString() )
-        }, (err, text) => {
-          console.log("you sent: " + text.body);
-          console.log("status of msg: " + text.status);
+    Store.findOne({_id: id}, (err, store) => {
+        if ( err ) console.error(err);
+        
+        else {
+          store.transactions.push(tr);
+          store.save((err) => {
+            if (err) {
+              res.send(err);
+              return console.log(err);
+            }
+            else {
+              console.log('store transactions:' + store.transactions);
+              /*
+              client.sendMessage({
+                to: ("+65"+ tr.phone_number),
+                from: config.TWILIO_TEST_NO,
+                body: ("Dear " + tr.name + ', Your loan is due on ' +
+                      (tr.expiry_date).toString() )
+              }, (err, text) => {
+                console.log("you sent: " + text.body);
+                console.log("status of msg: " + text.status);
+                });
+              */
+              res.send(store.transactions);
+            }
           });
-      res.send(tr);
-    }
-  });
+        }  
+    }); 
+  }
+});
 });
 
 app.put('/trans/*/renew', (req,res) => {
@@ -259,7 +270,7 @@ app.get('/test_message*', (req,res) => {
 app.get('/db_reset', (req,res) => {
   database_reset();
   res.send('OK');
-})
+});
 
 
 /* --------------------
@@ -288,8 +299,8 @@ function send_message(err, transactions, days) {
   // this is because it will try and send a message to an empty trans array and
   // thus get trans does not exist
   
-  if ( transactions == 0 ) {
-    console.log('no transactions fulfill criteria; not sending any SMSes')
+  if ( transactions == 0 ) { // == is deliberate
+    console.log('no transactions fulfill criteria; not sending any SMSes');
   }
   
   else {
@@ -340,11 +351,12 @@ function get_all_trans_expiring_in(days) {
     gt( (Date.now()) + (1000*3600*24*(days-1)) ).
     where('returned').equals(false).
     exec(function (err, doc) {
-      send_message(err, doc, days)}
+      send_message(err, doc, days);
+    }
       );
 }
 
-var schedule = require('node-schedule')
+var schedule = require('node-schedule');
 
 var rule = new schedule.RecurrenceRule();
   rule.hour = 8;
@@ -352,7 +364,7 @@ var rule = new schedule.RecurrenceRule();
   //rule.second = 0;
 
 var j = schedule.scheduleJob(rule, function(){
-  console.log("cronjob called")
+  console.log("cronjob called");
   get_all_trans_expiring_in(7);
   get_all_trans_expiring_in(3);
   get_all_trans_expiring_in(0);
@@ -388,7 +400,7 @@ function database_reset() {
       items: [],
       phone_number: '82882107',
       name: '3SG Ong Sheng Ping'
-    }
+    };
 
     var tra = new Trans(trans);
     tra.save( (err) => {
@@ -411,8 +423,5 @@ function database_reset() {
         console.log(sto);
       }
     });
-
   }
-
 }
-

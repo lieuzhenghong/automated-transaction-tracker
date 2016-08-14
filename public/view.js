@@ -241,7 +241,9 @@ var Stores_Table_Row = React.createClass({
         var res = JSON.parse(req.responseText);
         // I have to pass this "res" to the realpage or trans view page
         active_page = 'Transactions_View_Page';
-        dispatcher.dispatchEvent('send_store_transactions', res);
+        res.active_store = this.props.values._id
+        dispatcher.dispatchEvent('send_store_transactions', (res));
+        console.log(res);
         realPage.setState({active_page: active_page});
       }
     }
@@ -270,7 +272,7 @@ var Transactions_View_Page = React.createClass({
     }
     else {
       // console.log(this.props);
-      // console.log(this.props.transactions);
+      console.log(this.props.transactions);
       // When this page loads
       return  (
         <div class="page">
@@ -537,7 +539,7 @@ var Add_Transaction_Form_Page = React.createClass({
 
     
     var request = new XMLHttpRequest();
-    request.open("POST", "/trans");
+    request.open("POST", "/store/" + this.props.store_id + "/trans");
     request.setRequestHeader('Content-type', 'application/json');
     request.send(JSON.stringify(data));
     
@@ -717,6 +719,7 @@ var Page = React.createClass({
   getInitialState: function (){
     return({
       active_page: active_page,
+      active_store: '',
       store_transactions: {}, // Transactions of the active store.
       transaction_shown: {}
     })
@@ -724,9 +727,15 @@ var Page = React.createClass({
   componentDidMount: function() {
 
     dispatcher.addEventListener('send_store_transactions', (store_trans) => {
+      //First, take out the "active store"
+      var active_store = store_trans.active_store;
+      console.log(active_store);
+      delete store_trans.active_store;
       this.state.store_transactions = store_trans;
+      this.state.active_store = active_store;
       // console.log(this.state.store_transactions);
       this.setState({
+        active_store: this.state.active_store,
         store_transactions: this.state.store_transactions
       });
     });
@@ -769,7 +778,7 @@ var Page = React.createClass({
     return (
       <div id ="body">
       <Home_Page />
-      <Add_Transaction_Form_Page/>
+      <Add_Transaction_Form_Page store_id = {this.state.active_store}/>
       <Transactions_View_Page transactions={this.state.store_transactions} />
       <Transaction_View_Detail_Page transaction={this.state.transaction_shown} />
       </div>
