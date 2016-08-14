@@ -10,6 +10,7 @@ var url = 'mongodb://localhost:27017/transactions_db';
 var transactions_db;
 
 
+
 /* ------------
  * TWILIO
  * ---------- */
@@ -39,62 +40,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('public'));
 
-//normalise_date is a function that sets the timing of the loan to 8am sharp, no
-//matter the time of the actual borrowing. 
-//The reason for this is so that messages can be sent promptly at 8am in the
-//morning.
-
-function normalise_date(date) {
-  // console.log(date);
-  date.setHours(8,0,0,0);
-  // console.log(date);
-  // console.log(Date.parse(date));
-  return(date);
-}
-
-var itemSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Item must have name']
-  },
-  amount: {
-    type: Number,
-    min: [1, 'Need at least 1 item'],
-    required: [true, 'Input a number']
-  }
-});
-
-var transSchema = mongoose.Schema({
-  date: {
-    type: Date,
-    // Set to 8 am.
-    default: normalise_date(new Date())
-  },
-  expiry_date: {
-    type: Date,
-    default: (Date.parse(normalise_date(new Date())) + (60*60*24*30*1000)) //1000 for milliseconds
-  },
-  returned: {
-    type: Boolean,
-    default: false
-  },
-  name: String,
-  phone_number: String, 
-  items: [itemSchema]
-});
-
-var storeSchema = mongoose.Schema({
-  name: String,
-  transactions: [transSchema]
-});
-
-var Store = mongoose.model('Store', storeSchema);
-var Trans = mongoose.model("Transaction", transSchema);
-var Item = mongoose.model('Item', itemSchema);
-
 app.listen(3001, () => {  
   console.log('expressjs listening on port 3001');
 });
+
+/* -------------------------------------------
+ *
+ * Util functions in /utils 
+ *
+ * -------------------------------------------*/
+
+var normalise_date = require('./utils/normalise.js');
 
 /* --------------------------------------------
  *
@@ -102,164 +58,11 @@ app.listen(3001, () => {
  *
  * ------------------------------------------- */
 
-app.get('/store', (req, res) => {
-  Store.find((err, stores) => {
-    if (err) return console.error(err);
-    // console.log(stores);
-    res.send(stores);
-  });
-});
+require('./routes/user_routes.js')(app);
 
-app.get('/store/*/trans', (req, res) => {
-  var id = req.url.split('/')[2];
-  Store.findOne({'_id': id}, (err, store) => {
-    if ( err ) console.error(err);
-    else {
-      console.log(store.transactions);
-      res.send(store.transactions);
-    }
-  });
-});
+var store_routes = require('./routes/store_routes.js');
+app.use('/store', store_routes);
 
-app.post('/store', (req, res) => {
-  var store = req.body;
-  console.log(store);
-
-  var sto = new Store(store);
-  sto.save( (err) => {
-    if (err) return console.error(err);
-    else {
-      res.send(sto);
-    }
-  });
-});
-
-app.post('/store/*/trans', (req, res) => {
-  console.log('received');
-  var id = req.url.split('/')[2];
-  var ed_n =  req.body.expiry_date_number;
-  var ed_s = req.body.expiry_date_selector;
-  const ms = 1000*60*60*24;
-  var days = 0;
-
-  var trans = req.body;
-  console.log(trans);
-  
-  trans.expiry_date = new Date();
-
-  console.log(ed_s);
-  
-  if (ed_s === 'day') {
-    days = 1;
-  }
-  else if (ed_s === 'week') {
-    days = 7;
-  }
-  else if (ed_s === 'month') {
-    days = 30;
-  }
-  else {
-    assert(false, 'Should be day, month or year');
-  }
-
-  trans.expiry_date = ( Date.parse(normalise_date( trans.expiry_date)) + 
-                      (ms * days* ed_n) );
-  console.log(trans.expiry_date);
-  
-  var tr = new Trans(trans);
-  console.log(tr);
-
-  tr.save((err) => {
-    if (err){
-      res.send(err);
-      return console.error(err);
-    }    
-    else {
-    Store.findOne({_id: id}, (err, store) => {
-        if ( err ) console.error(err);
-        
-        else {
-          store.transactions.push(tr);
-          store.save((err) => {
-            if (err) {
-              res.send(err);
-              return console.log(err);
-            }
-            else {
-              console.log('store transactions:' + store.transactions);
-              /*
-              client.sendMessage({
-                to: ("+65"+ tr.phone_number),
-                from: config.TWILIO_TEST_NO,
-                body: ("Dear " + tr.name + ', Your loan is due on ' +
-                      (tr.expiry_date).toString() )
-              }, (err, text) => {
-                console.log("you sent: " + text.body);
-                console.log("status of msg: " + text.status);
-                });
-              */
-              res.send(store.transactions);
-            }
-          });
-        }  
-    }); 
-  }
-});
-});
-
-app.put('/trans/*/renew', (req,res) => {
-  //console.log(req);
-  //console.log(req.url);
-  var id = req.url.split('/')[2];
-  // req.url.split === [ '', 'trans', 'id', 'renew' ]
-  console.log(id);
-  console.log('received');
-  Trans.findOne({'_id': id}, (err,trans) => {
-    if (err) {
-      return console.error(err);
-    }
-    else {
-      trans.date = normalise_date(new Date());
-      trans.expiry_date = (Date.parse(trans.date) + 1000 * 60 * 60 * 24 * 30);
-      trans.save((err => {
-        if (err) return console.error(err);
-      }));
-      console.log(trans);
-      client.sendMessage({
-        to: ("+65"+ trans.phone_number),
-        from: config.TWILIO_TEST_NO,
-        body: ("Dear" + trans.name , "You just renewed your loan. It is due on " +
-        trans.expiry_date.toString())
-      }, (err, text) => {
-        console.log("you sent: " + text.body);
-        console.log("status of msg: " + text.status);
-        });
-      res.send(trans);
-    }
-  });
-});
-
-app.put('/trans/*/return', (req,res) => {
-  //console.log(req);
-  //console.log(req.url);
-  var id = req.url.split('/')[2];
-  // req.url.split === [ '', 'trans', 'id', 'renew' ]
-  console.log(id);
-  console.log('received');
-  Trans.findOne({'_id': id}, (err,trans) => {
-    if (err) {
-      return console.error(err);
-    }
-    else {
-      trans.returned = true;
-      console.log(trans);
-      trans.save((err => {
-        if (err) return console.error(err);
-      }));
-      res.send(trans);
-    }
-  });
-});
 
 app.get('/test_message*', (req,res) => {
   console.log(req.query);
@@ -385,43 +188,52 @@ function test(number) {
 function database_reset() {
   MongoClient.connect(url, (err, db) => {
     transactions_db = db;
-    transactions_db.collection('stores').deleteMany({});
-    transactions_db.collection('transactions').deleteMany({});
-    console.log("dropped");
-    add_data();
+    transactions_db.collection('users').deleteMany({}, ()=> {
+      transactions_db.collection('stores').deleteMany({}, ()=> {
+        transactions_db.collection('transactions').deleteMany({}, add_data);
+      });
+    });
   });
+}
 
   function add_data() {
 
-    var trans = {
-      date: Date.now(),
-      expiry_date: ((Date.now()) + 1000 * 60 * 60 * 24 * 7),     
-      returned: false,
-      items: [],
-      phone_number: '82882107',
-      name: '3SG Ong Sheng Ping'
-    };
+    //Remove this asap
+    var Store = require('./models/store.js');
+    var Trans = require('./models/trans.js');
+    var User = require('./models/user.js');
 
-    var tra = new Trans(trans);
-    tra.save( (err) => {
-      if (err) return console.error(err);
-      else {
-        // console.log(tra);
-        console.log('trans saved');
-      }
+    var user = new User({
+    name: "Lieu Zheng Hong",
+    password: "password",
+    admin: true 
     });
-    
-    var store =  {
-      name: "GE Store",
-      transactions: [tra]
-    };
 
-    var sto = new Store(store);
-    sto.save( (err) => {
+    user.save((err) => {
       if (err) return console.error(err);
-      else {
-        console.log(sto);
-      }
+      var sto = new Store({
+        _user_id: user._id,
+        name: "GE Store"
+      });
+
+      sto.save((err) => {
+        if (err) return console.error(err);
+
+        var tra = new Trans({
+          _store_id: sto._id,
+          date: Date.now(),
+          expiry_date: ((Date.now())+1000*60*60*24*7),
+          returned: false,
+          phone_number: '82882107',
+          name: '3SG Ong Sheng Ping'
+        });
+        tra.save((err) => {
+          if (err) return console.error(err);
+
+          console.log(user);
+          console.log(sto);
+          console.log(tra);
+        });
     });
-  }
+  });
 }

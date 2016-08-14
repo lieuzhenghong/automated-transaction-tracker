@@ -93,8 +93,8 @@ var Add_Transaction_Button = React.createClass({
 });
 
 var Add_Store_Button = React.createClass({
-  onClick: function() {
-    
+  handleClick: function() {
+    this.props.onClick();
   },
   render: function() {
     return(
@@ -166,6 +166,10 @@ var Back_to_Home_Button = React.createClass({
 
 
 var Home_Page = React.createClass({
+  handleClick: function() {
+    console.log('called');
+    // I have to pass this event to my Stores_Table
+  },
   render: function () {
     if (active_page != 'Home_Page') {
       // console.log('not rendering Homepage');
@@ -176,7 +180,7 @@ var Home_Page = React.createClass({
       <div class="page">
       <h1>Loan Tracker</h1>
       <Stores_Table request="/store" />
-      <Add_Store_Button/>
+      <Add_Store_Button onClick = {this.handleClick}/>
       </div>
     )
 
@@ -757,7 +761,7 @@ var Page = React.createClass({
       // console.log(this.state.transaction_shown._id);
       let id = this.state.transaction_shown._id;
       // console.log(id);
-      let url = '/trans/' + id + '/' + action;
+      let url = '/store/' + this.state.active_store + '/trans/' + id + '/' + action;
       console.log(url);
       // /trans/_id/renew
       update.open('PUT', url);
