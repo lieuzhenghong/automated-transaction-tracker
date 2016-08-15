@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var assert = require('assert');
 var url = 'mongodb://localhost:27017/transactions_db';
+var jwt = require('jsonwebtoken');
 var transactions_db;
 
 
@@ -58,11 +59,11 @@ var normalise_date = require('./utils/normalise.js');
  *
  * ------------------------------------------- */
 
-require('./routes/user_routes.js')(app);
+var user_routes = require('./routes/user_routes.js')
+app.use('/user', user_routes);
 
 var store_routes = require('./routes/store_routes.js');
 app.use('/store', store_routes);
-
 
 app.get('/test_message*', (req,res) => {
   console.log(req.query);
@@ -204,7 +205,8 @@ function database_reset() {
     var User = require('./models/user.js');
 
     var user = new User({
-    name: "Lieu Zheng Hong",
+    phone_number: '82882107',
+    username: "Lieu Zheng Hong",
     password: "password",
     admin: true 
     });
