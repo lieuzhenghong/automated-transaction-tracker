@@ -8,7 +8,7 @@ var config = require('../config.js');
 user_routes.post('/authenticate', (req, res) => {
   console.log('/authenticate');
   User.findOne({phone_number: req.body.phone_number}, (err, ph_no) => {
-    if (!ph_no) {
+    if (!ph_no) { //If this user does not exist 
       res.json({
         success: false, 
         message: 'Phone number does not exist. \n Did you mean to sign up instead?'

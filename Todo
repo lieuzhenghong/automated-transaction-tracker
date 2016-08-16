@@ -1,12 +1,17 @@
 TODO:
 
 Working add/delete store feature
+Fix the store routes to only display stores that have user corresponding to the token's user OR users that have been granted permission to view stores (admins and invited users)
 
-Change user schema to include personal phone number
+--Change user schema to include personal phone number-- OK 15/8
 
 User permissions: 
   --login--  OK 15/8, 
   add and delete stores,
   add and remove contributors
 
+
+FAR-OFF-IN-THE-FUTURE-FEATURES:
+
+Customise messages to send and message recipients
 
