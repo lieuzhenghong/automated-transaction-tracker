@@ -61,7 +61,7 @@ var user_routes = require('./routes/user_routes.js')
 app.use('/user', user_routes);
 
 var store_routes = require('./routes/store_routes.js');
-app.use('/store', store_routes);
+app.use('/:_user_id/store', store_routes);
 
 app.get('/test_message*', (req,res) => {
   console.log(req.query);

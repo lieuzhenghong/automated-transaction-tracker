@@ -1,8 +1,6 @@
 'use strict';
 var active_page = 'Home_Page';
 
-
-
 /* ----------------------
  *
  * Dispatcher/ Reactor pattern model
@@ -177,7 +175,7 @@ var Home_Page = React.createClass({
     return (
       <div class="page">
       <h1>Loan Tracker</h1>
-      <Stores_Table request="/store" />
+      <Stores_Table />
       <Add_Store_Button onClick = {this.handleClick}/>
       </div>
     )
@@ -201,8 +199,13 @@ var Stores_Table = React.createClass({
     });
   },
   componentDidMount: function() {
+    console.log(localStorage.getItem('_user_id'));
+    var _user_id = localStorage.getItem('_user_id');
+    var request_url = '/' + _user_id + '/store';
+    console.log(request_url);
+
     var get = new XMLHttpRequest();
-    get.open("GET", this.props.request);
+    get.open("GET", request_url);
     get.onreadystatechange = () => {
       if (get.readyState == 4) {
         this.setState({
@@ -237,7 +240,7 @@ var Stores_Table = React.createClass({
 var Stores_Table_Row = React.createClass({
   handleClick: function () {
     var req = new XMLHttpRequest();
-    req.open("GET", ("/store/" + this.props.values._id + "/trans"));
+    req.open("GET", ("/" + localStorage.getItem('_user_id') + "/store/" + this.props.values._id + "/trans"));
     req.onreadystatechange = () => {
       if (req.readyState == 4) {
         var res = JSON.parse(req.responseText);
@@ -709,6 +712,105 @@ var Item = React.createClass({
     )
   }
 })
+
+/* ------------------------
+ *
+ * Add store page 
+ *
+ * ------------------------ */
+
+class Add_Store_Page extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      
+    }
+  }
+  render () {
+    if (active_page != 'Add_Store_Page') {
+      return (null);
+    }
+    else {
+      return(
+        <div className="page">
+          <h1>Add Store</h1>
+          <Add_Store_Form />
+          <Back_to_Home_Button />
+        </div>
+      )
+    }
+  }
+}
+
+
+class Add_Store_Form extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      status_message: ''
+    }
+    
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  handleChange(key) {
+    return (e) => {
+      var state = {};
+      state[key] = e.target.value;
+      this.setState(state);
+      console.log(this.state);
+    }
+  }
+  handleSubmit(e) {
+    e.preventDefault();
+
+    console.log(localStorage.getItem('token'));
+    console.log(localStorage.getItem('_user_id'));
+
+    var data = {
+      name: this.state.name,
+      _user_id: localStorage.getItem('_user_id')
+    }
+    
+    var req = new XMLHttpRequest();
+    req.open("POST", '/' + localStorage.getItem('_user_id') + '/store');
+    req.setRequestHeader('Content-type', 'application/json');
+    console.log(JSON.stringify(data));
+    req.send(JSON.stringify(data));
+    
+    req.onreadystatechange = () => {
+
+      if (req.readyState == 4) {
+        var res = JSON.parse(req.responseText); 
+        console.log(res);
+        
+        this.state = {
+          status_message: res.message
+        }
+      }
+    }
+  }
+  render() {
+    
+
+    return(
+        <div id="body">
+        <div id="message"><p>{this.status_message}</p></div>
+        <form>
+        <label for='store_name'>Store name</label>
+        <input type='text' onChange = {this.handleChange('name')} id='name'/>
+
+
+        <input type='submit' value = 'Create store' onClick={this.handleSubmit} />
+        </form>
+        </div>
+        )
+  }
+}
+
+//ReactDOM.render( <Add_Store_Page/>, document.getElementById('content') );
+
 
 /* ------------------------
  * 

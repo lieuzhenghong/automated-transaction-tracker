@@ -1,13 +1,16 @@
 var express = require('express');
 var Store = require('../models/store.js');
 
-var store_routes = express.Router();
+var store_routes = express.Router({mergeParams: true});
 
 store_routes.route('/')
   .get((req, res) => {
-  Store.find({_user_id: req.body._user_id}, (err, stores) => {
+  console.log(req.params);
+  var _user_id = req.params._user_id;
+  console.log(_user_id);
+  Store.find({_user_id: _user_id}, (err, stores) => {
     if (err) return console.error(err);
-    // console.log(stores);
+    console.log(stores);
     res.send(stores);
     });
   })
