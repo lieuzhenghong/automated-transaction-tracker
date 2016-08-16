@@ -1,6 +1,7 @@
 'use strict';
 var active_page = 'Home_Page';
-// import reactCSS, {hover} from 'reactCSS';
+
+
 
 /* ----------------------
  *
@@ -94,7 +95,8 @@ var Add_Transaction_Button = React.createClass({
 
 var Add_Store_Button = React.createClass({
   handleClick: function() {
-    this.props.onClick();
+    active_page = 'Add_Store_Page';
+    realPage.setState({active_page: active_page});
   },
   render: function() {
     return(
@@ -166,10 +168,6 @@ var Back_to_Home_Button = React.createClass({
 
 
 var Home_Page = React.createClass({
-  handleClick: function() {
-    console.log('called');
-    // I have to pass this event to my Stores_Table
-  },
   render: function () {
     if (active_page != 'Home_Page') {
       // console.log('not rendering Homepage');
@@ -782,6 +780,7 @@ var Page = React.createClass({
     return (
       <div id ="body">
       <Home_Page />
+      <Add_Store_Page />
       <Add_Transaction_Form_Page store_id = {this.state.active_store}/>
       <Transactions_View_Page transactions={this.state.store_transactions} />
       <Transaction_View_Detail_Page transaction={this.state.transaction_shown} />

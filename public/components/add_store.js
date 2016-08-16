@@ -1,3 +1,26 @@
+class Add_Store_Page extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      
+    }
+    render () {
+      if (active_page != 'Add_Store_Page') {
+        return (null);
+        else {
+          return({
+            <div className="page">
+              <h1>Add Store</h1>
+              <Add_Store_Form />
+            </div>
+          })
+        }
+      }
+    }
+  }
+}
+
+
 class Add_Store_Form extends React.Component {
   constructor(props) {
     super(props);
@@ -64,5 +87,4 @@ class Add_Store_Form extends React.Component {
   }
 }
 
-ReactDOM.render( <Add_Store_Form/>, document.getElementById('content') );
-//module.exports = Add_Store_Form;
+//ReactDOM.render( <Add_Store_Form/>, document.getElementById('content') );
