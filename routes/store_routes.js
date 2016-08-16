@@ -5,7 +5,7 @@ var store_routes = express.Router();
 
 store_routes.route('/')
   .get((req, res) => {
-  Store.find((err, stores) => {
+  Store.find({_user_id: req.body._user_id}, (err, stores) => {
     if (err) return console.error(err);
     // console.log(stores);
     res.send(stores);
@@ -13,7 +13,6 @@ store_routes.route('/')
   })
   .post((req, res) => {
     var store = req.body;
-    store._user_id = req.params._user_id; 
     console.log(store);
 
     var sto = new Store(store);

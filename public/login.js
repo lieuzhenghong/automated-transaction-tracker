@@ -58,8 +58,18 @@ class Login_Page extends React.Component {
             console.log(res.token);
             this.setState({
               status_message: (res.success ? 'Success! ': 'Failure! ') + 
-                res.message + 'Your token: ' + res.token
+                res.message + 'Your token: ' + res.token + 'Your id: ' + 
+                res._user_id
             })
+
+            if (res.success) {
+              //Save JWT in localStorage
+              localStorage.clear();
+              localStorage.setItem('token', res.token);
+              localStorage.setItem('_user_id', res._user_id);
+              console.log(localStorage.getItem('token'));
+              console.log(localStorage.getItem('_user_id'));
+            }
           }
         }
       }
@@ -78,14 +88,14 @@ class Login_Page extends React.Component {
             id = "phone_number" 
             onChange= { this.handleChange('phone_number') }
           />
-          <label for="username">Username (optional)</label>
+          <label for="username">Username. For others to find you.</label>
           <input  
             type = 'text'
             value = {this.state.username}
             id = "username" 
             onChange= { this.handleChange('username') }
           />
-          <label for="password">Password (optional)</label>
+          <label for="password">Password (optional--but good to have!)</label>
           <input 
             type = 'password' 
             value = {this.state.password}

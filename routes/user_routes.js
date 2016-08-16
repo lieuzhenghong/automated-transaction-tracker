@@ -12,7 +12,7 @@ user_routes.post('/authenticate', (req, res) => {
       res.json({
         success: false, 
         message: 'Phone number does not exist. \n Did you mean to sign up instead?'
-      });
+      }); 
     }
     else if (ph_no) {
       if (ph_no.password != req.body.password) {
@@ -23,13 +23,19 @@ user_routes.post('/authenticate', (req, res) => {
       }
       else {
         //create a json token
-        var token = jwt.sign(ph_no, config.secret, {
-          expiresIn: 60 * 60 * 24  //24 hours
+        //console.log(ph_no);
+        // console.log(typeof(config.secret));
+        const secret = config.secret;
+        // console.log(secret);
+        
+        var token = jwt.sign(ph_no, secret, {
+          expiresIn: config.token_expiry_time
         });
 
         res.json ({
           success: true,
           message: 'Authentication success!',
+          _user_id: ph_no._id,
           token: token
         });
       }

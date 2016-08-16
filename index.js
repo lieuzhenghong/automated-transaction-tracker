@@ -10,8 +10,6 @@ var url = 'mongodb://localhost:27017/transactions_db';
 var jwt = require('jsonwebtoken');
 var transactions_db;
 
-
-
 /* ------------
  * TWILIO
  * ---------- */
