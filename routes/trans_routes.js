@@ -22,6 +22,7 @@ trans_routes.route('/')
     });
   })
   .post((req, res) => {
+    console.log('received');
     var id = req.params._store_id;
     var ed_n =  req.body.expiry_date_number;
     var ed_s = req.body.expiry_date_selector;
@@ -91,22 +92,22 @@ trans_routes.put('/:_trans_id/renew', (req,res) => {
     else {
       trans.date = normalise_date(new Date());
       trans.expiry_date = (Date.parse(trans.date) + 1000 * 60 * 60 * 24 * 30);
-      trans.save((err => {
+      trans.save((err) => {
         if (err) return console.error(err);
-      }));
-      console.log(trans);
-      /*
-      client.sendMessage({
-        to: ("+65"+ trans.phone_number),
-        from: config.TWILIO_TEST_NO,
-        body: ("Dear" + trans.name , "You just renewed your loan. It is due on " +
-        trans.expiry_date.toString())
-      }, (err, text) => {
-        console.log("you sent: " + text.body);
-        console.log("status of msg: " + text.status);
-        });
-      */
-      res.send(trans);
+        console.log(trans);
+        /*
+        client.sendMessage({
+          to: ("+65"+ trans.phone_number),
+          from: config.TWILIO_TEST_NO,
+          body: ("Dear" + trans.name , "You just renewed your loan. It is due on " +
+          trans.expiry_date.toString())
+        }, (err, text) => {
+          console.log("you sent: " + text.body);
+          console.log("status of msg: " + text.status);
+          });
+        */
+        res.send(trans);
+      });
     }
   });
 });

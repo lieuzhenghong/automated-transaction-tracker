@@ -195,22 +195,28 @@ var Home_Page = React.createClass({
 var Stores_Table = React.createClass({
   getInitialState: function() {
     return ({
-      stores: []
+      stores: [],
+      users: []
     });
   },
   componentDidMount: function() {
     console.log(localStorage.getItem('_user_id'));
     var _user_id = localStorage.getItem('_user_id');
     var request_url = '/' + _user_id + '/store';
-    console.log(request_url);
 
     var get = new XMLHttpRequest();
     get.open("GET", request_url);
     get.onreadystatechange = () => {
       if (get.readyState == 4) {
+        console.log('OK');
+        var res = JSON.parse(get.responseText);
+        console.log(res);
+
         this.setState({
-          stores: JSON.parse(get.responseText)
+          stores: res.stores,
+          users: res.users
         })
+
       }
     }
     get.send();
@@ -218,15 +224,26 @@ var Stores_Table = React.createClass({
   render: function() {
     var rows = [];
     for (var i = 0; i < this.state.stores.length; i++) {
-      //console.log(this.state.transactions[i]);
-      rows.push(<Stores_Table_Row key={i} values={this.state.stores[i]}/>)
+      //console.log(this.state.transactions[i]); 
+      var user = this.state.users[i];
+      if (user === undefined) { user = null; }
+
+      console.log(user);
+        rows.push(
+
+          <Stores_Table_Row 
+            key={i} 
+            store={this.state.stores[i]} 
+            user={user}
+            />
+      )
     }
     return(
         <table>
           <thead>
             <tr>
-              <th> Store </th>
-              <th> Store ID </th>
+              <th>Store</th>
+              <th>Owner</th>
             </tr>
           </thead>
           <tbody>
@@ -240,13 +257,14 @@ var Stores_Table = React.createClass({
 var Stores_Table_Row = React.createClass({
   handleClick: function () {
     var req = new XMLHttpRequest();
-    req.open("GET", ("/" + localStorage.getItem('_user_id') + "/store/" + this.props.values._id + "/trans"));
+    req.open("GET", ("/" + localStorage.getItem('_user_id') + "/store/" + 
+            this.props.store._id + "/trans"));
     req.onreadystatechange = () => {
       if (req.readyState == 4) {
         var res = JSON.parse(req.responseText);
         // I have to pass this "res" to the realpage or trans view page
         active_page = 'Transactions_View_Page';
-        res.active_store = this.props.values._id
+        res.active_store = this.props.store;
         dispatcher.dispatchEvent('send_store_transactions', (res));
         console.log(res);
         realPage.setState({active_page: active_page});
@@ -257,8 +275,9 @@ var Stores_Table_Row = React.createClass({
   render: function() {
     return (
         <tr onClick = {this.handleClick}>
-        <td>{ this .props.values.name }</td>
-        <td>{ this.props.values._id }</td>
+        <td>{ this.props.store.name }</td>
+        <td>{ this.props.user.username }</td>
+        <td><a href=''>Edit</a></td>
         </tr>
         )
   }
@@ -281,7 +300,7 @@ var Transactions_View_Page = React.createClass({
       // When this page loads
       return  (
         <div class="page">
-        <h1> Loans overview </h1>
+        <h1> Loans overview for {this.props.active_store.name}</h1>
         <Transaction_Table transactions = {this.props.transactions} />
         <Add_Transaction_Button />
         <Back_to_Home_Button />
@@ -544,7 +563,7 @@ var Add_Transaction_Form_Page = React.createClass({
 
     
     var request = new XMLHttpRequest();
-    request.open("POST", "/store/" + this.props.store_id + "/trans");
+    request.open("POST", "/" + localStorage.getItem('_user_id') + "/store/" + this.props.store_id + "/trans");
     request.setRequestHeader('Content-type', 'application/json');
     request.send(JSON.stringify(data));
     
@@ -811,6 +830,11 @@ class Add_Store_Form extends React.Component {
 
 //ReactDOM.render( <Add_Store_Page/>, document.getElementById('content') );
 
+/*------------------------
+ *
+ * User bar
+ *
+ * ---------------------- */
 
 /* ------------------------
  * 
@@ -831,6 +855,7 @@ var Page = React.createClass({
   componentDidMount: function() {
 
     dispatcher.addEventListener('send_store_transactions', (store_trans) => {
+      console.log(store_trans);
       //First, take out the "active store"
       var active_store = store_trans.active_store;
       console.log(active_store);
@@ -883,8 +908,12 @@ var Page = React.createClass({
       <div id ="body">
       <Home_Page />
       <Add_Store_Page />
-      <Add_Transaction_Form_Page store_id = {this.state.active_store}/>
-      <Transactions_View_Page transactions={this.state.store_transactions} />
+      <Add_Transaction_Form_Page
+        active_store={this.state.active_store}
+        store_id = {this.state.active_store._id}/>
+      <Transactions_View_Page 
+        active_store={this.state.active_store}
+        transactions={this.state.store_transactions} />
       <Transaction_View_Detail_Page transaction={this.state.transaction_shown} />
       </div>
     )
