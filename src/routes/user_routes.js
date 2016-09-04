@@ -16,9 +16,11 @@ user_routes.get('/:query', (req, res) => {
     {phone_number: {$regex: regex_no, $options: 'i'} }, 
     {_id: req.params.query}
   ]}, (err, users) => {
-    if (err) res.send(err);
-    console.log(users);
-    res.json(users);
+    if (err) res.send(err); 
+    else {
+      console.log(users);
+      res.json(users);  
+    }
   })
 })
 
