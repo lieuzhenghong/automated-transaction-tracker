@@ -1,9 +1,23 @@
 # SMS Reminder Service
 
-**version 0.10**
+**version 0.20**
 
-Version 0.10 is the first version ready to be deployed. Here is the current
+Version 0.20 is the second version ready to be deployed. Here is the current
 feature set as of this version:
+
+
+## New features:
+
+* Signup and login feature
+  * Change phone number, password, username
+
+* Add new stores
+  * Choose contributors (only contributors can access your stores)
+
+* Edit stores
+  * Rename store, add contributors
+
+## Features in v0.10:
 
 * Add new loan with fields:
   * Name

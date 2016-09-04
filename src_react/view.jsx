@@ -1,6 +1,5 @@
 'use strict';
 var active_page = 'Home_Page';
-// import reactCSS, {hover} from 'reactCSS';
 
 /* ----------------------
  *
@@ -93,8 +92,9 @@ var Add_Transaction_Button = React.createClass({
 });
 
 var Add_Store_Button = React.createClass({
-  onClick: function() {
-    
+  handleClick: function() {
+    active_page = 'Add_Store_Page';
+    realPage.setState({active_page: active_page});
   },
   render: function() {
     return(
@@ -175,8 +175,8 @@ var Home_Page = React.createClass({
     return (
       <div class="page">
       <h1>Loan Tracker</h1>
-      <Stores_Table request="/store" />
-      <Add_Store_Button/>
+      <Stores_Table />
+      <Add_Store_Button onClick = {this.handleClick}/>
       </div>
     )
 
@@ -195,17 +195,28 @@ var Home_Page = React.createClass({
 var Stores_Table = React.createClass({
   getInitialState: function() {
     return ({
-      stores: []
+      stores: [],
+      users: []
     });
   },
   componentDidMount: function() {
+    console.log(localStorage.getItem('_user_id'));
+    var _user_id = localStorage.getItem('_user_id');
+    var request_url = '/' + _user_id + '/store';
+
     var get = new XMLHttpRequest();
-    get.open("GET", this.props.request);
+    get.open("GET", request_url);
     get.onreadystatechange = () => {
       if (get.readyState == 4) {
+        console.log('OK');
+        var res = JSON.parse(get.responseText);
+        console.log(res);
+
         this.setState({
-          stores: JSON.parse(get.responseText)
+          stores: res.stores,
+          users: res.users
         })
+
       }
     }
     get.send();
@@ -213,15 +224,26 @@ var Stores_Table = React.createClass({
   render: function() {
     var rows = [];
     for (var i = 0; i < this.state.stores.length; i++) {
-      //console.log(this.state.transactions[i]);
-      rows.push(<Stores_Table_Row key={i} values={this.state.stores[i]}/>)
+      //console.log(this.state.transactions[i]); 
+      var user = this.state.users[i];
+      if (user === undefined) { user = null; }
+
+      console.log(user);
+        rows.push(
+
+          <Stores_Table_Row 
+            key={i} 
+            store={this.state.stores[i]} 
+            user={user}
+            />
+      )
     }
     return(
         <table>
           <thead>
             <tr>
-              <th> Store </th>
-              <th> Store ID </th>
+              <th>Store</th>
+              <th>Owner</th>
             </tr>
           </thead>
           <tbody>
@@ -235,13 +257,14 @@ var Stores_Table = React.createClass({
 var Stores_Table_Row = React.createClass({
   handleClick: function () {
     var req = new XMLHttpRequest();
-    req.open("GET", ("/store/" + this.props.values._id + "/trans"));
+    req.open("GET", ("/" + localStorage.getItem('_user_id') + "/store/" + 
+            this.props.store._id + "/trans"));
     req.onreadystatechange = () => {
       if (req.readyState == 4) {
         var res = JSON.parse(req.responseText);
         // I have to pass this "res" to the realpage or trans view page
         active_page = 'Transactions_View_Page';
-        res.active_store = this.props.values._id
+        res.active_store = this.props.store;
         dispatcher.dispatchEvent('send_store_transactions', (res));
         console.log(res);
         realPage.setState({active_page: active_page});
@@ -252,8 +275,9 @@ var Stores_Table_Row = React.createClass({
   render: function() {
     return (
         <tr onClick = {this.handleClick}>
-        <td>{ this .props.values.name }</td>
-        <td>{ this.props.values._id }</td>
+        <td>{ this.props.store.name }</td>
+        <td>{ this.props.user.username }</td>
+        <td><a href=''>Edit</a></td>
         </tr>
         )
   }
@@ -276,7 +300,7 @@ var Transactions_View_Page = React.createClass({
       // When this page loads
       return  (
         <div class="page">
-        <h1> Loans overview </h1>
+        <h1> Loans overview for {this.props.active_store.name}</h1>
         <Transaction_Table transactions = {this.props.transactions} />
         <Add_Transaction_Button />
         <Back_to_Home_Button />
@@ -539,7 +563,7 @@ var Add_Transaction_Form_Page = React.createClass({
 
     
     var request = new XMLHttpRequest();
-    request.open("POST", "/store/" + this.props.store_id + "/trans");
+    request.open("POST", "/" + localStorage.getItem('_user_id') + "/store/" + this.props.store_id + "/trans");
     request.setRequestHeader('Content-type', 'application/json');
     request.send(JSON.stringify(data));
     
@@ -709,6 +733,110 @@ var Item = React.createClass({
 })
 
 /* ------------------------
+ *
+ * Add store page 
+ *
+ * ------------------------ */
+
+class Add_Store_Page extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      
+    }
+  }
+  render () {
+    if (active_page != 'Add_Store_Page') {
+      return (null);
+    }
+    else {
+      return(
+        <div className="page">
+          <h1>Add Store</h1>
+          <Add_Store_Form />
+          <Back_to_Home_Button />
+        </div>
+      )
+    }
+  }
+}
+
+
+class Add_Store_Form extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      status_message: ''
+    }
+    
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  handleChange(key) {
+    return (e) => {
+      var state = {};
+      state[key] = e.target.value;
+      this.setState(state);
+      console.log(this.state);
+    }
+  }
+  handleSubmit(e) {
+    e.preventDefault();
+
+    console.log(localStorage.getItem('token'));
+    console.log(localStorage.getItem('_user_id'));
+
+    var data = {
+      name: this.state.name,
+      _user_id: localStorage.getItem('_user_id')
+    }
+    
+    var req = new XMLHttpRequest();
+    req.open("POST", '/' + localStorage.getItem('_user_id') + '/store');
+    req.setRequestHeader('Content-type', 'application/json');
+    console.log(JSON.stringify(data));
+    req.send(JSON.stringify(data));
+    
+    req.onreadystatechange = () => {
+
+      if (req.readyState == 4) {
+        var res = JSON.parse(req.responseText); 
+        console.log(res);
+        
+        this.state = {
+          status_message: res.message
+        }
+      }
+    }
+  }
+  render() {
+    
+
+    return(
+        <div id="body">
+        <div id="message"><p>{this.status_message}</p></div>
+        <form>
+        <label for='store_name'>Store name</label>
+        <input type='text' onChange = {this.handleChange('name')} id='name'/>
+
+
+        <input type='submit' value = 'Create store' onClick={this.handleSubmit} />
+        </form>
+        </div>
+        )
+  }
+}
+
+//ReactDOM.render( <Add_Store_Page/>, document.getElementById('content') );
+
+/*------------------------
+ *
+ * User bar
+ *
+ * ---------------------- */
+
+/* ------------------------
  * 
  * Page wrapper 
  *
@@ -727,6 +855,7 @@ var Page = React.createClass({
   componentDidMount: function() {
 
     dispatcher.addEventListener('send_store_transactions', (store_trans) => {
+      console.log(store_trans);
       //First, take out the "active store"
       var active_store = store_trans.active_store;
       console.log(active_store);
@@ -757,7 +886,7 @@ var Page = React.createClass({
       // console.log(this.state.transaction_shown._id);
       let id = this.state.transaction_shown._id;
       // console.log(id);
-      let url = '/trans/' + id + '/' + action;
+      let url = '/store/' + this.state.active_store + '/trans/' + id + '/' + action;
       console.log(url);
       // /trans/_id/renew
       update.open('PUT', url);
@@ -778,8 +907,13 @@ var Page = React.createClass({
     return (
       <div id ="body">
       <Home_Page />
-      <Add_Transaction_Form_Page store_id = {this.state.active_store}/>
-      <Transactions_View_Page transactions={this.state.store_transactions} />
+      <Add_Store_Page />
+      <Add_Transaction_Form_Page
+        active_store={this.state.active_store}
+        store_id = {this.state.active_store._id}/>
+      <Transactions_View_Page 
+        active_store={this.state.active_store}
+        transactions={this.state.store_transactions} />
       <Transaction_View_Detail_Page transaction={this.state.transaction_shown} />
       </div>
     )

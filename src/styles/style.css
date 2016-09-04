@@ -9,6 +9,10 @@ body {
   line-height: 1.4em;
 }
 
+header {
+  background-color: rgba(220, 200, 200, 1);
+}
+
 h1, h2, h3, h4, p, blockquote,figure, ol, ul {
   margin: 0;
   padding: 0;

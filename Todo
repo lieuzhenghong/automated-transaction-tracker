@@ -1,0 +1,34 @@
+TODO:
+
+Require the user to log in
+Logout feature
+Display current user on all pages, possibly in a header
+Token expiry?
+Add contributors feature.
+Delete store and remove contributors.
+Actually hash and salt passwords.
+
+--Working add/delete store feature-- ADD OK 17/8
+
+--Fix the store routes to only display stores that have user corresponding to the token's user OR users that have been granted permission to view stores (admins and invited users)-- OK 17/8
+
+--Change user schema to include personal phone number-- OK 15/8
+
+User permissions: 
+  --login--  OK 15/8, 
+  --add and delete stores--, OK 17/8
+  delete stores,
+  manage store page-- OK 23/8
+  add and remove contributors, -- OK 30/8
+  Change user details (all except admin and _user_id) -- OK 30/8
+
+User management page: not working -- OK 23/8
+Store management page: not working, need to learn Promises -- OK 23/8
+Token routing: not implemented
+Change user
+
+
+FAR-OFF-IN-THE-FUTURE-FEATURES:
+
+Customise messages to send and message recipients
+

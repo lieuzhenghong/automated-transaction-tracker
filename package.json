@@ -3,19 +3,41 @@
   "version": "1.0.0",
   "description": "sms reminder service ",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "lieu",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.1",
     "express": "^4.14.0",
+    "jsonwebtoken": "^7.1.9",
     "mongodb": "^2.1.18",
     "mongoose": "^4.5.0",
     "node-schedule": "^1.1.1",
     "react": "^15.1.0",
-    "reactcss": "^1.0.3",
     "twilio": "^2.9.1"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-react": "^6.5.0",
+    "browserify": "^13.1.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-util": "^3.0.7",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lieuzhenghong/automated-transaction-tracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lieuzhenghong/automated-transaction-tracker/issues"
+  },
+  "homepage": "https://github.com/lieuzhenghong/automated-transaction-tracker#readme",
+  "bin": {
+    "sms_reminder": "login.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
