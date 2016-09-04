@@ -20,9 +20,22 @@
     "twilio": "^2.9.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.11.4",
-    "babel-plugin-transform-es2015-modules-systemjs": "^6.12.0",
-    "babel-preset-es2015": "^6.13.2",
-    "babel-preset-react": "^6.11.1"
-  }
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-react": "^6.5.0",
+    "browserify": "^13.1.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-util": "^3.0.7",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lieuzhenghong/automated-transaction-tracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lieuzhenghong/automated-transaction-tracker/issues"
+  },
+  "homepage": "https://github.com/lieuzhenghong/automated-transaction-tracker#readme"
 }

@@ -7,27 +7,21 @@ var config = require('../config.js');
 
 //For search queries
 user_routes.get('/:query', (req, res) => {
-  console.log(req.params.query);
+  console.log('user route called');
   let regex_no = `^${req.params.query}.*`;
   let regex_name = `${req.params.query}.*`;
   User.find( {$or: [{username: {$regex: regex_name, $options: 'i'} }, 
-    {phone_number: {$regex: regex_no, $options: 'i'} }]},
-    (err, users) => {
+    {phone_number: {$regex: regex_no, $options: 'i'} }, 
+    {_id: req.params.query}
+  ]}, (err, users) => {
+    if (err) res.send(err);
     console.log(users);
     res.json(users);
   })
 })
 
-user_routes.get('/:_id', (req, res) => {
-    console.log('OK');
-    User.findOne({_id: req.params._id}, (err, user) => {
-      if (err) res.send(err);
-      res.json(user);
-    })
-})
 user_routes.put('/:_id', (req, res) => {
   //First, check if the phone number is unique.
-  console.log(req.params);
   req.body.phone_number = req.body.phone_number.trim();
   console.log(req.body);
   User.findOne({phone_number: req.body.phone_number}, (err, user) => {
@@ -40,8 +34,6 @@ user_routes.put('/:_id', (req, res) => {
     }
     else {
      User.findOne({_id: req.params._id}, (err, user) => {
-      console.log('finding');
-      console.log(user);
       if (err) res.send(err);
       user.username = req.body.username;
       user.phone_number = req.body.phone_number;
@@ -96,7 +88,6 @@ user_routes.post('/authenticate', (req, res) => {
 });
 
 user_routes.post('/sign_up', (req, res) => {
-  console.log('received');
   var user = new User({
     // I have to strip phone number of spaces.
     phone_number: req.body.phone_number,

@@ -62,6 +62,10 @@ class User_Management_Page extends React.Component {
     req.send(JSON.stringify(data));
   }
   render() {
+    if (this.props.active_page != 'User_Management_Page') {
+      return(null);
+    }
+    
     return(
         <div id="body">
         <p> {this.state.status_message} </p>
@@ -71,7 +75,7 @@ class User_Management_Page extends React.Component {
         <p>Phone: {this.state.phone_number}</p>
         <p>User: {this.state.username}</p>
         
-        <label for="phone_number">Phone number (login with this)</label>
+        <label htmlFor="phone_number">Phone number (login with this)</label>
         <input
           type='number' 
           id='phone_number' 
@@ -79,7 +83,7 @@ class User_Management_Page extends React.Component {
           onChange={this.handleChange('phone_number')
           }
           />
-        <label for='user_name'>Name: Others can use this to find you. Choose a
+        <label htmlFor='user_name'>Name: Others can use this to find you. Choose a
         name that is easily recognisable and not too common.</label>
         <input 
           type='text' 
@@ -95,4 +99,4 @@ class User_Management_Page extends React.Component {
   }
 }
 
-ReactDOM.render( <User_Management_Page/>, document.getElementById('content') );
+// ReactDOM.render( <User_Management_Page/>, document.getElementById('content') );

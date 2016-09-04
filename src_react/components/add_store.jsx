@@ -1,6 +1,6 @@
 'use strict'
 
-class Store_Management_Page extends React.Component {
+class Add_Store_Page extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,47 +11,24 @@ class Store_Management_Page extends React.Component {
       owner: [],
       contributors_ids: [],
       contributors: [],
-      output_content: []
+      output_content: [],
+      status_message: ''
     }
-    this.componentDidMount = this.componentDidMount.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-  componentDidMount() {
-    console.log('mounted');
-    var req = new XMLHttpRequest();
-    req.open("GET", "/" + localStorage.getItem('_user_id') + "/store/" + 
-      this.props._id + "/manage");
-    req.onreadystatechange = () => {
-      if (req.readyState == 4) {
-        var res = JSON.parse(req.responseText);
-        console.log(res);
-        // First item is the store object, 
-        // second the owner object,
-        // third item the array of contributors
-        this.setState({
-          _id: res[0]._id,
-          name: res[0].name,
-          contributors_ids: res[0].contributors,
-          owner: res[1],
-          contributors: res[2]
-        })
-        console.log(this.state);
-      }
-    }
-    req.send();
-  }
   handleClick(e) {
     console.log('clicked');
     let clicked = e.target.parentNode.id;
-    console.log(this.state.output_content[clicked]);
-    this.state.contributors.push(this.state.output_content[clicked])
+    //console.log(this.state.output_content[clicked]);
+    this.state.contributors.push(this.state.output_content[clicked]);
     this.state.contributors_ids.push(this.state.output_content[clicked]._id);
     this.setState({
       contributors_id: this.state.contributors_id,
       contributors: this.state.contributors
     })
+    console.log(this.state.contributors);
   }
   handleChange(key) {
     return (e) => {
@@ -85,8 +62,27 @@ class Store_Management_Page extends React.Component {
     }
   }
   handleSubmit(e) {
-    //Send a POST request to the server
-    // The server needs to check that this phone number isn't already used
+    e.preventDefault();
+    console.log('sending POST request');
+    var data = {
+      _user_id: localStorage.getItem('_user_id'),
+      name: this.state.name,
+      contributors: this.state.contributors
+    }
+    var req = new XMLHttpRequest();
+    req.open("POST",  "/" + localStorage.getItem('_user_id') + '/store');
+ 
+    req.onreadystatechange = () => {
+
+      if (req.readyState == 4) {
+        var res = JSON.parse(req.responseText);
+        console.log(res);this.setState({
+          status_message: (res.success ? 'Success! ' : 'Failure! ') + res.message 
+        });
+      }
+    }      
+    req.setRequestHeader('Content-type', 'application/json');
+    req.send(JSON.stringify(data));
   }
   render() {
     var rows = [];
@@ -106,18 +102,23 @@ class Store_Management_Page extends React.Component {
     let d = this.state.contributors;
 
     for (let i = 0; i < d.length; i++) {
-      console.log(d);
       contributors.push(
           <li id={i}>
             {d[i].username}
             </li>
       );
     }
-    
-    return(
+
+    if (this.props.active_page != 'Add_Store_Page') {
+      return (null);
+    }
+
+    else {
+      return(
         <div id="body">
-        <h1>Change store details</h1>
+        <h1>Add store</h1>
         <form>
+        <p>{this.state.status_message}</p>
         <p>Store name: {this.state.name}</p>
         <p>Owner: {this.state.owner.username}</p>
         <div>
@@ -127,7 +128,7 @@ class Store_Management_Page extends React.Component {
           </ul>
         </div>
         
-        <label for="name">Store name</label>
+        <label htmlFor="name">Store name</label>
 
         <input
           type='text' 
@@ -137,7 +138,7 @@ class Store_Management_Page extends React.Component {
           />
 
         <div id = 'search'>
-        <label for ='search_contributors'>Contributors</label>
+        <label htmlFor ='search_contributors'>Contributors</label>
 
         <ul>
         {contributors}
@@ -151,7 +152,7 @@ class Store_Management_Page extends React.Component {
         
         <table id = "output_content">
         <thead>
-        <tr> <td>Display name</td><td>Phone number</td></tr>
+        <tr><td>Display name</td><td>Phone number</td></tr>
         </thead>
         <tbody>
         {rows}
@@ -163,8 +164,9 @@ class Store_Management_Page extends React.Component {
         </form>
         </div>
         )
+    
+    }
   }
 }
 
-ReactDOM.render( <Store_Management_Page _id="57baff93d572b0481d31cb63"/>, document.getElementById('content') );
 

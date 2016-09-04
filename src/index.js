@@ -37,7 +37,7 @@ db.once('open', ()=> {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static('public'));
+app.use(express.static('./'));
 
 app.listen(3001, () => {  
   console.log('expressjs listening on port 3001');
@@ -63,7 +63,7 @@ app.use('/user', user_routes);
 var store_routes = require('./routes/store_routes.js');
 app.use('/:_user_id/store', store_routes);
 
-app.get('/test_message*', (req,res) => {
+app.get('/test_message/:phone_number', (req,res) => {
   console.log(req.query);
   test(req.query.phone_number);
   res.send('Sending a message to: ' + req.query.phone_number);
@@ -73,6 +73,10 @@ app.get('/db_reset', (req,res) => {
   database_reset();
   res.send('OK');
 });
+
+app.get('/logout', (req, res) => {
+  res.send('No logout feature yet.');
+})
 
 
 /* --------------------

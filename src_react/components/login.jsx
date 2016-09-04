@@ -69,6 +69,7 @@ class Login_Page extends React.Component {
               localStorage.setItem('_user_id', res._user_id);
               console.log(localStorage.getItem('token'));
               console.log(localStorage.getItem('_user_id'));
+              window.location = "/index.html";
             }
           }
         }
@@ -79,8 +80,9 @@ class Login_Page extends React.Component {
     return (
         <div id = "body">
           <h1> Automated transaction tracker </h1>
+          <h1> Login or sign up </h1>
           <div id = "message"><p>{this.state.status_message}</p></div>
-          <label for="phone_number">Phone number. Must be unique.</label>
+          <label htmlFor="phone_number">Phone number. Must be unique.</label>
           <input
             required
             type = 'text'
@@ -88,14 +90,14 @@ class Login_Page extends React.Component {
             id = "phone_number" 
             onChange= { this.handleChange('phone_number') }
           />
-          <label for="username">Username. For others to find you.</label>
+          <label htmlFor="username">Username. For others to find you.</label>
           <input  
             type = 'text'
             value = {this.state.username}
             id = "username" 
             onChange= { this.handleChange('username') }
           />
-          <label for="password">Password (optional--but good to have!)</label>
+          <label htmlFor="password">Password (optional--but good to have!)</label>
           <input 
             type = 'password' 
             value = {this.state.password}

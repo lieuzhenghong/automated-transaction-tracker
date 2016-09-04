@@ -1,7 +1,12 @@
 TODO:
 
 Require the user to log in
+Logout feature
+Display current user on all pages, possibly in a header
+Token expiry?
 Add contributors feature.
+Delete store and remove contributors.
+Actually hash and salt passwords.
 
 --Working add/delete store feature-- ADD OK 17/8
 
@@ -13,17 +18,14 @@ User permissions:
   --login--  OK 15/8, 
   --add and delete stores--, OK 17/8
   delete stores,
-  manage store page 
-  add and remove contributors,
-  Change user details (all except admin and _user_id)
+  manage store page-- OK 23/8
+  add and remove contributors, -- OK 30/8
+  Change user details (all except admin and _user_id) -- OK 30/8
 
-User management page: not working
-Store management page: not working, need to learn Promises
+User management page: not working -- OK 23/8
+Store management page: not working, need to learn Promises -- OK 23/8
 Token routing: not implemented
-
-
-Change user 
-
+Change user
 
 
 FAR-OFF-IN-THE-FUTURE-FEATURES:

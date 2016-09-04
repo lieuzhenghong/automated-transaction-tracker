@@ -15,8 +15,6 @@ store_routes.route('/')
   Store.find({$or: [{_user_id: _user_id}, {contributors: { $in: [_user_id]}}]}, 
   (err, stores) => {
     if (err) return console.error(err);
-    console.log('finding');
-    console.log(stores);
     let users = [];
 
     // ES6 Promises 
@@ -30,8 +28,6 @@ store_routes.route('/')
       var query = User.findOne({_id: stores[i]._user_id});
       promises[i] = query.exec();
       promises[i].then(function(user) {
-        console.log('testing');
-        console.log(user);
         users.push(user);
       })
     }
@@ -40,8 +36,6 @@ store_routes.route('/')
     });
     
     function sendResponse(payload) {
-      console.log('Sending payload');
-      console.log(payload);
       res.send(payload)
     }
     });
@@ -54,15 +48,13 @@ store_routes.route('/')
     sto.save( (err) => {
       if (err) return console.error(err);
       else {
-        res.send(sto);
+        res.send({success: true, message:'Store successfully created!'});
       }
     });
   });
 
 store_routes.route('/:_store_id/manage')
   .get((req, res) => {
-    console.log('got it');
-    //console.log(req.params);
     
     Store.findOne({_id: req.params._store_id}, (err, store) => {
       let owner = {};
@@ -78,30 +70,36 @@ store_routes.route('/:_store_id/manage')
         //console.log(store.contributors[i]);
         let query = User.findOne({_id: store.contributors[i]});
         promises[i] = query.exec();
-        console.log('ok');
         promises[i].then(function(user) {
-          console.log(user);
           contributors.push(user);
           console.log('i am being called');
 
         });
       }
-
       let query = User.findOne({_id: store._user_id});
       promises.push(query.exec());
       promises[promises.length-1].then(function(user) {owner = user;})
       //console.log(promises);
 
       Promise.all(promises).then(function() {
-        console.log([store, owner, contributors]);
         res.send([store, owner, contributors]);
       })
     })
   })
-  .post((req, res) => {
+  .put((req, res) => {
+    console.log('hello');
     Store.findOne({_id: req.params._store_id}, (err, store) => {
+      console.log(store);
       //Edit the store according to its details 
-          
+      store._user_id = req.params._user_id;
+      store.name = req.body.name;
+      store.contributors = req.body.contributors;
+      store.save((err) => {
+        if (err) return console.error(err);
+        console.log('store here');
+        console.log(store);
+        res.json({success: true, message: "Store successfully updated."});
+      })
     })  
   })
 
