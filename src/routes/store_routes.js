@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var Store = require('../models/store.js');
 var User = require('../models/user.js');
