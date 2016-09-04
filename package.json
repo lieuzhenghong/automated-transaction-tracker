@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "sms reminder service ",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel public/components -o public/index.js"
-  },
   "author": "lieu",
   "license": "ISC",
   "dependencies": {
@@ -37,5 +33,11 @@
   "bugs": {
     "url": "https://github.com/lieuzhenghong/automated-transaction-tracker/issues"
   },
-  "homepage": "https://github.com/lieuzhenghong/automated-transaction-tracker#readme"
+  "homepage": "https://github.com/lieuzhenghong/automated-transaction-tracker#readme",
+  "bin": {
+    "sms_reminder": "login.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
