@@ -7,6 +7,7 @@ var user_routes = express.Router();
 var config = require('../config.js');
 var bcrypt = require('bcrypt-nodejs');
 
+
 //For search queries
 user_routes.get('/:query', (req, res) => {
   'use strict';
