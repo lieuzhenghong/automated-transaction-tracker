@@ -71,10 +71,6 @@ app.get('/db_reset', (req,res) => {
   res.send('OK');
 });
 
-app.get('/logout', (req, res) => {
-  res.send('No logout feature yet.');
-})
-
 var auth_routes = require('./routes/auth_routes.js')
 app.use('/auth', auth_routes);
 

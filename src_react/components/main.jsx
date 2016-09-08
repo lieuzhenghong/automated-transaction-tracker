@@ -12,14 +12,16 @@ class Home_Page extends React.Component {
       status_message: '',
     };
     this.goTo = this.goTo.bind(this);
+    this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.updateUser = this.updateUser.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     console.log(localStorage.getItem('_user_id'));
     const _user_id = localStorage.getItem('_user_id');
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
 
     var req = new XMLHttpRequest();
     let url = '/user/' + _user_id;
@@ -49,8 +51,14 @@ class Home_Page extends React.Component {
         }
       }
     }
-    req = set_HTTP_header(req);
+
+    if (token != null) {
+      req = set_HTTP_header(req);
+    }
     req.send();
+  }
+
+  componentDidMount() {
 
     dispatcher.addEventListener('send_store_transactions', (store_trans) => {
         console.log(store_trans);
@@ -119,7 +127,13 @@ class Home_Page extends React.Component {
     })
   }
 
+  logout() {
+    localStorage.clear();
+    window.location = '/login.html';
+  }
+
   render() {
+    console.log(this.state.status_message);
     if (this.state.status_message !== '') {
       var message = this.state.status_message;
       function createMessage(message) {return {__html: message}}
@@ -130,7 +144,7 @@ class Home_Page extends React.Component {
 
     return(
         <div>
-        <header>{this.state.user.username} <button>Logout</button></header>
+        <header>{this.state.user.username} <button onClick={this.logout}>Logout</button></header>
         <h1>{this.state.active_page}</h1>
         <button onClick={this.goTo('User_Management_Page')}>Edit user</button>
         <button onClick={this.goTo('Stores_Page')}>View stores</button>

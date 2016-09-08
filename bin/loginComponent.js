@@ -148,6 +148,7 @@ var Login_Page = function (_React$Component) {
           'Password (optional--but good to have!)'
         ),
         React.createElement('input', {
+          required: true,
           type: 'password',
           value: this.state.password,
           id: 'password',

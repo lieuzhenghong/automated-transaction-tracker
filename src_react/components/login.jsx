@@ -99,6 +99,7 @@ class Login_Page extends React.Component {
           />
           <label htmlFor="password">Password (optional--but good to have!)</label>
           <input 
+            required
             type = 'password' 
             value = {this.state.password}
             id = "password" 

@@ -31,7 +31,7 @@ api_routes.use(function(req, res, next) {
     // return an error
     return res.status(403).send({
       success: false,
-      message: 'No token provided.'
+      message: "No token provided. <a href='login.html'> Try logging in again? </a>"
     })
   }
 });

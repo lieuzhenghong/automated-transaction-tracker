@@ -1,9 +1,9 @@
 TODO:
-Logout feature
-  Token revocation
+
 Customised message sending
 Delete store 
 Remove contributors
+Logout feature -- OK 08/09
 
 Write a test suite
 Look into an approach that's better than gulp concat
