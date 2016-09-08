@@ -4,6 +4,7 @@ var jwt = require('jsonwebtoken');
 var User = require('../models/user.js');
 var user_routes = express.Router();
 var config = require('../config.js');
+var bcrypt = require('bcrypt-nodejs');
 
 //For search queries
 user_routes.get('/:query', (req, res) => {
@@ -59,30 +60,38 @@ user_routes.post('/authenticate', (req, res) => {
       }); 
     }
     else if (ph_no) {
-      if (ph_no.password != req.body.password) {
-        res.json({
-          success: false,
-          message: 'Authentication failed. Wrong password.'
-        });
-      }
-      else {
-        //create a json token
-        //console.log(ph_no);
-        // console.log(typeof(config.secret));
-        const secret = config.secret;
-        // console.log(secret);
-        
-        var token = jwt.sign(ph_no, secret, {
-          expiresIn: config.token_expiry_time
-        });
+      bcrypt.compare(req.body.password, ph_no.password, (err, result) => {
+        if (err) {
+          res.json({
+            success: false,
+            message: 'Unknown error.'
+          });
+        }
+        else if (result == false) {
+          res.json({
+            success: false,
+            message: 'Wrong password.'
+          });
+        } 
+        else {
+          //create a json token
+          //console.log(ph_no);
+          // console.log(typeof(config.secret));
+          const secret = config.secret;
+          // console.log(secret);
+          
+          var token = jwt.sign(ph_no, secret, {
+            expiresIn: config.token_expiry_time
+          });
 
-        res.json ({
-          success: true,
-          message: 'Authentication success!',
-          _user_id: ph_no._id,
-          token: token
-        });
-      }
+          res.json ({
+            success: true,
+            message: 'Authentication success!',
+            _user_id: ph_no._id,
+            token: token
+          });
+        }
+      })
     }
   })
 });
