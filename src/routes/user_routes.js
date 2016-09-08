@@ -1,22 +1,45 @@
+'use strict';
+
 const express = require('express');
 const User = require('../models/user.js');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 var user_routes = express.Router();
 
 //For search queries
 user_routes.get('/:query', (req, res) => {
-  'use strict';
-  let regex_no = `^${req.params.query}.*`;
-  let regex_name = `${req.params.query}.*`;
-  User.find( {$or: [{username: {$regex: regex_name, $options: 'i'} }, 
-    {phone_number: {$regex: regex_no, $options: 'i'} }, 
-    {_id: req.params.query}
-  ]}, (err, users) => {
-    if (err) res.send(err); 
-    else {
-      res.json(users);  
+  // http://stackoverflow.com/questions/13850819/can-i-determine-if-a-string-is-a-mongodb-objectid
+  // The reason I have to do these checks is because I get an error if I try to
+  // cast the search string to an ObjectId
+  //
+  function search(string) {
+    let regex_no = `^${req.params.query}.*`;
+    let regex_name = `${req.params.query}.*`;
+    User.find( {$or: [{username: {$regex: regex_name, $options: 'i'} }, 
+      {phone_number: {$regex: regex_no, $options: 'i'} } ]}, (err, users) => {
+      if (err) res.send(err); 
+      else {
+        res.json(users);  
+      }
+    })
+  }
+  
+  if (ObjectId.isValid(req.params.query)) {
+    if (req.params.query == new ObjectId(req.params.query)) { 
+      User.find({_id: req.params.query}, (err, users) => {
+        if (err) res.send(err);
+        else {
+          res.json(users);
+        }
+      });
     }
-  })
+    else {
+      search(req.params.query);
+    }
+  }
+  else {
+    search(req.params.query);
+  } 
 })
 
 user_routes.put('/:_id', (req, res) => {

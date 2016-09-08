@@ -62,7 +62,6 @@ class Store_Management_Page extends React.Component {
         if (e.target.value != '') { //Make sure I don't send a useless blank request
           var req = new XMLHttpRequest();
           req.open("GET", "/user/" + e.target.value);
-          req = set_HTTP_header(req);
           req.onreadystatechange = () => {
             if (req.readyState == 4) {
               var res = JSON.parse(req.responseText);
@@ -71,7 +70,7 @@ class Store_Management_Page extends React.Component {
               });
             }
           }
-          req.send();
+          set_HTTP_header(req).send();
         }
         else {
           this.setState({
@@ -114,7 +113,7 @@ class Store_Management_Page extends React.Component {
       }
     }      
     req.setRequestHeader('Content-type', 'application/json');
-    req.send(JSON.stringify(data));
+    set_HTTP_header(req).send(JSON.stringify(data));
   }
   render() {
     var rows = [];
