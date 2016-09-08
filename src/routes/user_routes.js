@@ -1,3 +1,4 @@
+
 var express = require('express');
 var jwt = require('jsonwebtoken');
 
@@ -7,6 +8,7 @@ var config = require('../config.js');
 
 //For search queries
 user_routes.get('/:query', (req, res) => {
+  'use strict';
   console.log('user route called');
   let regex_no = `^${req.params.query}.*`;
   let regex_name = `${req.params.query}.*`;
@@ -14,9 +16,11 @@ user_routes.get('/:query', (req, res) => {
     {phone_number: {$regex: regex_no, $options: 'i'} }, 
     {_id: req.params.query}
   ]}, (err, users) => {
-    if (err) res.send(err);
-    console.log(users);
-    res.json(users);
+    if (err) res.send(err); 
+    else {
+      console.log(users);
+      res.json(users);  
+    }
   })
 })
 
