@@ -119,7 +119,6 @@ class Add_Store_Page extends React.Component {
         <form>
         <p>{this.state.status_message}</p>
         <p>Store name: {this.state.name}</p>
-        <p>Owner: {this.state.owner.username}</p>
         <div>
           Contributors:
           <ul>
