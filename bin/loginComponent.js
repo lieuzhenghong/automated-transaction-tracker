@@ -145,7 +145,7 @@ var Login_Page = function (_React$Component) {
         React.createElement(
           'label',
           { htmlFor: 'password' },
-          'Password (optional--but good to have!)'
+          'Password'
         ),
         React.createElement('input', {
           required: true,

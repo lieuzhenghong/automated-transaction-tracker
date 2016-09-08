@@ -97,7 +97,7 @@ class Login_Page extends React.Component {
             id = "username" 
             onChange= { this.handleChange('username') }
           />
-          <label htmlFor="password">Password (optional--but good to have!)</label>
+          <label htmlFor="password">Password</label>
           <input 
             required
             type = 'password' 
