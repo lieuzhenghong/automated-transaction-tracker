@@ -37,6 +37,7 @@ class Add_Store_Page extends React.Component {
         if (e.target.value != '') { //Make sure I don't send a useless blank request
           var req = new XMLHttpRequest();
           req.open("GET", "/user/" + e.target.value);
+          req = set_HTTP_header(req);
           req.onreadystatechange = () => {
             if (req.readyState == 4) {
               var res = JSON.parse(req.responseText);
@@ -71,7 +72,7 @@ class Add_Store_Page extends React.Component {
     }
     var req = new XMLHttpRequest();
     req.open("POST",  "/" + localStorage.getItem('_user_id') + '/store');
- 
+    req = set_HTTP_header(req);
     req.onreadystatechange = () => {
 
       if (req.readyState == 4) {

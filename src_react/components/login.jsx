@@ -39,7 +39,7 @@ class Login_Page extends React.Component {
       }
 
       var req = new XMLHttpRequest();
-      req.open("POST", '/user' + key);
+      req.open("POST", '/auth' + key);
       req.setRequestHeader('Content-type', 'application/json');
       //console.log(JSON.stringify(data));
       req.send(JSON.stringify(data));

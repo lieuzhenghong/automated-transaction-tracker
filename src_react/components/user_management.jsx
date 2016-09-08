@@ -19,15 +19,19 @@ class User_Management_Page extends React.Component {
     console.log('mounted');
     var req = new XMLHttpRequest();
     req.open("GET", "/user/" + localStorage.getItem('_user_id'));
+    req = set_HTTP_header(req);
     req.onreadystatechange = () => {
       if (req.readyState == 4) {
         var res = JSON.parse(req.responseText);
+        // console.log(res);
+        // console.log(Object.keys(res[0]));
+        // console.log(res[0]['username']);
         this.setState({
-          phone_number: res.phone_number,
-          _id: res._id,
-          username: res.username
+          phone_number: res[0].phone_number,
+          _id: res[0]._id,
+          username: res[0].username
         })
-        console.log(this.state);
+        // console.log(this.state);
       }
     }
     req.send();
@@ -40,6 +44,7 @@ class User_Management_Page extends React.Component {
       console.log(this.state);
     }
   }
+  
   handleSubmit(e) {
     e.preventDefault();
     console.log('sending PUT request');
@@ -51,12 +56,14 @@ class User_Management_Page extends React.Component {
     }
     var req = new XMLHttpRequest();
     req.open("PUT", "/user/" + localStorage.getItem('_user_id'));
+    req = set_HTTP_header(req);
     req.onreadystatechange = () => {
       var res = JSON.parse(req.responseText);
       console.log(res);
       this.setState({
         status_message: (res.success ? 'Success!' : 'Failure!') + res.message 
       });
+      this.props.onUpdate(res.user);
     }      
     req.setRequestHeader('Content-type', 'application/json');
     req.send(JSON.stringify(data));
@@ -65,27 +72,29 @@ class User_Management_Page extends React.Component {
     if (this.props.active_page != 'User_Management_Page') {
       return(null);
     }
-    
+    console.log(this.state);
     return(
         <div id="body">
         <p> {this.state.status_message} </p>
         <h1>Change user details</h1>
         <p>If you change your phone number, you can edit it here.</p>
         <form>
-        <p>Phone: {this.state.phone_number}</p>
-        <p>User: {this.state.username}</p>
+        <p>Phone: {this.state.phone_number} </p>
+        <p>User: {this.state.username} </p>
         
         <label htmlFor="phone_number">Phone number (login with this)</label>
         <input
+          required='required'
           type='number' 
           id='phone_number' 
           defaultValue={this.state.phone_number}
           onChange={this.handleChange('phone_number')
           }
           />
-        <label htmlFor='user_name'>Name: Others can use this to find you. Choose a
-        name that is easily recognisable and not too common.</label>
+        <label htmlFor='user_name'>Name: Choose a
+        name that is unique so people can find you.</label>
         <input 
+          required='required'
           type='text' 
           id="user_name" 
           defaultValue={this.state.username}

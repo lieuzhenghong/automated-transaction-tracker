@@ -16,16 +16,14 @@ and lastly make the design nice
 
 
 TODO:
-I
-Require the user to log in
 Logout feature
-Display current user on all pages, possibly in a header
-Token expiry?
-Add contributors feature.
 Delete store and remove contributors.
 
-Actually hash and salt passwords. -- OK 08/09 
 
+Require the user to log in --OK 08/09
+Display current user on all pages, possibly in a header -- OK 08/09
+Add contributors feature -- OK 08/09
+Actually hash and salt passwords. -- OK 08/09 
 --Working add/delete store feature-- ADD OK 17/8
 
 --Fix the store routes to only display stores that have user corresponding to the token's user OR users that have been granted permission to view stores (admins and invited users)-- OK 17/8

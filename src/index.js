@@ -60,12 +60,6 @@ var normalise_date = require('./utils/normalise.js');
  *
  * ------------------------------------------- */
 
-var user_routes = require('./routes/user_routes.js')
-app.use('/user', user_routes);
-
-var store_routes = require('./routes/store_routes.js');
-app.use('/:_user_id/store', store_routes);
-
 app.get('/test_message/:phone_number', (req,res) => {
   console.log(req.query);
   test(req.query.phone_number);
@@ -80,6 +74,31 @@ app.get('/db_reset', (req,res) => {
 app.get('/logout', (req, res) => {
   res.send('No logout feature yet.');
 })
+
+var auth_routes = require('./routes/auth_routes.js')
+app.use('/auth', auth_routes);
+
+/* ------------------------------------
+ *
+/* Everything below here is protected! 
+ *
+ * ------------------------------------*/
+
+var api_routes = require('./routes/api_routes.js')
+app.use('/', api_routes);
+
+// This API route checks for whether the JWT is legit or not.
+
+const user_routes = require('./routes/user_routes.js');
+const store_routes = require('./routes/store_routes.js');
+const trans_routes = require('./routes/trans_routes.js');
+
+
+api_routes.use('/user', user_routes);
+
+user_routes.use('/:_user_id/store', store_routes);
+
+store_routes.use('/:_store_id/trans', trans_routes);
 
 
 /* --------------------

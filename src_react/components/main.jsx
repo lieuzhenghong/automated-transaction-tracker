@@ -6,34 +6,50 @@ class Home_Page extends React.Component {
     this.state = {
       user: {},
       active_page: 'Home Page',
-      active_store: '',
+      active_store: {},
       store_transactions: {},
-      transaction_shown: {}
+      transaction_shown: {},
+      status_message: '',
     };
     this.goTo = this.goTo.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
+    this.updateUser = this.updateUser.bind(this);
   }
 
   componentDidMount() {
     console.log(localStorage.getItem('_user_id'));
-    var _user_id = localStorage.getItem('_user_id');
+    const _user_id = localStorage.getItem('_user_id');
+    const token = localStorage.getItem('token')
 
     var req = new XMLHttpRequest();
     let url = '/user/' + _user_id;
-  
+
     console.log(url);
 
     req.open('GET', url);
+
     req.onreadystatechange = () => {
       if (req.readyState == 4) {
-        var user = JSON.parse(req.responseText);
-          this.state.user = user[0];
+        let res = JSON.parse(req.responseText);
+
+        if (res.success == false ) {
+          console.log(res.message);
           this.setState({
-            user: this.state.user
-          });
-          console.log(this.state.user);
+            status_message: res.message
+          })
+          console.log(this.state.status_message);
+        }
+        else {
+          var user = JSON.parse(req.responseText);
+            this.state.user = user[0];
+            this.setState({
+              user: this.state.user
+            });
+            console.log(this.state.user);
+        }
       }
     }
+    req = set_HTTP_header(req);
     req.send();
 
     dispatcher.addEventListener('send_store_transactions', (store_trans) => {
@@ -63,15 +79,16 @@ class Home_Page extends React.Component {
       });
       
       dispatcher.addEventListener('update_transaction', (action) => {
+        const _user_id = localStorage.getItem('_user_id');
         var update = new XMLHttpRequest();
         // console.log(this.state.transaction_shown._id);
         let id = this.state.transaction_shown._id;
         // console.log(id);
-        let url = '/store/' + this.state.active_store + '/trans/' +
-        id + '/' + action;
+        let url = '/user/'+ _user_id + '/store/' + this.state.active_store._id + '/trans/' + id + '/' + action;
         console.log(url);
         // /trans/_id/renew
         update.open('PUT', url);
+
         update.onreadystatechange = () => {
           if (update.readyState == 4){
             dispatcher.dispatchEvent('send_transaction_details', 
@@ -81,7 +98,7 @@ class Home_Page extends React.Component {
             // I think it's cleaner to do this. DRY after all...
           };
         }
-        update.send();
+        set_HTTP_header(update).send();
        });
   }
 
@@ -94,8 +111,23 @@ class Home_Page extends React.Component {
       })
     }
   }
+  
+  updateUser(user) {
+    this.state.user = user;
+    this.setState({
+      user: user
+    })
+  }
 
   render() {
+    if (this.state.status_message !== '') {
+      var message = this.state.status_message;
+      function createMessage(message) {return {__html: message}}
+      return (
+        <div dangerouslySetInnerHTML={createMessage(message)} />
+      )
+    }
+
     return(
         <div>
         <header>{this.state.user.username} <button>Logout</button></header>
@@ -124,7 +156,10 @@ class Home_Page extends React.Component {
               active_page={this.state.active_page}
               transaction ={this.state.transaction_shown}
             />
-        <User_Management_Page active_page = {this.state.active_page}/>
+        <User_Management_Page 
+          active_page = {this.state.active_page}
+          onUpdate = {this.updateUser}
+        />
         </div>
         )
   }

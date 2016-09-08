@@ -48,10 +48,11 @@ var Stores_Table = React.createClass({
   componentDidMount: function() {
     console.log(localStorage.getItem('_user_id'));
     var _user_id = localStorage.getItem('_user_id');
-    var request_url = '/' + _user_id + '/store';
+    var request_url = '/user/' + _user_id + '/store';
 
     var get = new XMLHttpRequest();
     get.open("GET", request_url);
+    get = set_HTTP_header(get);
     get.onreadystatechange = () => {
       if (get.readyState == 4) {
         console.log('OK');
@@ -102,8 +103,11 @@ var Stores_Table = React.createClass({
 var Stores_Table_Row = React.createClass({
   getTransactions: function () {
     var req = new XMLHttpRequest();
-    req.open("GET", ("/" + localStorage.getItem('_user_id') + "/store/" + 
-            this.props.store._id + "/trans"));
+    var URL = ("/user/" + localStorage.getItem('_user_id') + "/store/" + 
+        this.props.store._id + "/trans");
+    console.log(URL);
+    req.open("GET", URL);
+    req = set_HTTP_header(req);
     req.onreadystatechange = () => {
       if (req.readyState == 4) {
         var res = JSON.parse(req.responseText);

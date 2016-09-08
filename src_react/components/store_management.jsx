@@ -21,8 +21,9 @@ class Store_Management_Page extends React.Component {
   }
   onRender() {
     var req = new XMLHttpRequest();
-    req.open("GET", "/" + localStorage.getItem('_user_id') + "/store/" + 
+    req.open("GET", "/user/" + localStorage.getItem('_user_id') + "/store/" + 
       this.props.active_store._id + "/manage");
+    req = set_HTTP_header(req);
     req.onreadystatechange = () => {
       if (req.readyState == 4) {
         var res = JSON.parse(req.responseText);
@@ -61,6 +62,7 @@ class Store_Management_Page extends React.Component {
         if (e.target.value != '') { //Make sure I don't send a useless blank request
           var req = new XMLHttpRequest();
           req.open("GET", "/user/" + e.target.value);
+          req = set_HTTP_header(req);
           req.onreadystatechange = () => {
             if (req.readyState == 4) {
               var res = JSON.parse(req.responseText);
@@ -98,8 +100,9 @@ class Store_Management_Page extends React.Component {
       contributors: this.state.contributors
     }
     var req = new XMLHttpRequest();
-    req.open("PUT",  "/" + localStorage.getItem('_user_id') + "/store/" + 
+    req.open("PUT",  "/user/" + localStorage.getItem('_user_id') + "/store/" + 
       this.props._id + "/manage");
+    req = set_HTTP_header(req);
  
     req.onreadystatechange = () => {
 
