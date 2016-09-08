@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var Trans = require('../models/trans.js');
 var config = require('../config.js');
