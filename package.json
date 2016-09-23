@@ -2,6 +2,9 @@
   "name": "sms_reminder",
   "version": "1.0.0",
   "description": "sms reminder service ",
+  "engines": {
+    "node": "6.1.0",
+  }
   "main": "index.js",
   "author": "lieu",
   "license": "ISC",
