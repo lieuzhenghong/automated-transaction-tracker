@@ -7,5 +7,5 @@ exports.TWILIO_TEST_NO = '14439917746';
 exports.secret = 'testing'; //Used to sign a JSON Web Token
 exports.token_expiry_time = '14 days'; // Token expiry time
 exports.port = process.env.PORT || 3001;
-exports.database = 'mongodb://heroku_n3t81wnq:79bdbh4phcu47c38v409b7peo7@ds035816.mlab.com:35816/heroku_n3t81wnq' || 'mongodb://localhost:27017/transactions_db';
+exports.database = process.env.MONGODB_URI || 'mongodb://localhost:27017/transactions_db';
 
