@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt-nodejs');
 const MongoClient = require('mongodb').MongoClient;
 const mongoose = require('mongoose');
-const url = 'mongodb://localhost:27017/transactions_db';  
+const config = require('../config.js');
 
 var Store = require('../models/store.js');
 var Trans = require('../models/trans.js');
@@ -14,7 +14,7 @@ var User = require('../models/user.js');
  * ------------------------ */
 
 function database_reset() {
-  MongoClient.connect(url, (err, db) => {
+  MongoClient.connect(config.database, (err, db) => {
     transactions_db = db;
     transactions_db.collection('users').deleteMany({}, ()=> {
       transactions_db.collection('stores').deleteMany({}, ()=> {
