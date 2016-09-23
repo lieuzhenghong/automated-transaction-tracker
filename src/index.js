@@ -7,7 +7,6 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var assert = require('assert');
 // var url = 'mongodb://localhost:27017/transactions_db';
-const url = 'mongodb://heroku_n3t81wnq:79bdbh4phcu47c38v409b7peo7@ds035816.mlab.com:35816/heroku_n3t81wnq' || 'mongodb://localhost:27017/transactions_db';
 var jwt = require('jsonwebtoken');
 var transactions_db;
 
@@ -27,12 +26,13 @@ var client = require('twilio')(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_TOK
  *
  * -------------------------------------------- */
 
-MongoClient.connect(url, (err,db) => {
+MongoClient.connect(config.database, (err,db) => {
   assert.equal(null, err);
+  console.log(`connected to mongodb ${config.database}`);
   transactions_db = db;
 });
 
-mongoose.connect(url);
+mongoose.connect(config.database);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongoose connection error'));
 db.once('open', ()=> {
