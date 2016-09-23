@@ -105,10 +105,5 @@ store_routes.route('/:_store_id/manage')
     })  
   })
 
-// Using trans_router 
-
-var trans_routes = require('./trans_routes.js');
-
-store_routes.use('/:_store_id/trans', trans_routes);
 
 module.exports = store_routes;

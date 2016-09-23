@@ -62,7 +62,7 @@ var Login_Page = function (_React$Component) {
         };
 
         var req = new XMLHttpRequest();
-        req.open("POST", '/user' + key);
+        req.open("POST", '/auth' + key);
         req.setRequestHeader('Content-type', 'application/json');
         //console.log(JSON.stringify(data));
         req.send(JSON.stringify(data));
@@ -145,9 +145,10 @@ var Login_Page = function (_React$Component) {
         React.createElement(
           'label',
           { htmlFor: 'password' },
-          'Password (optional--but good to have!)'
+          'Password'
         ),
         React.createElement('input', {
+          required: true,
           type: 'password',
           value: this.state.password,
           id: 'password',

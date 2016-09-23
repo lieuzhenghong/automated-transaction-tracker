@@ -31,12 +31,7 @@ strong{
 }
 
 a, button {
-  color: inherit;
   transition: .3s;
-}
-
-a {
-  text-decoration: none;
 }
 
 button, input[type="submit"] {
@@ -82,7 +77,7 @@ h1 {
   }
 }
 
-input[type="text"], input[type="tel"], input[type="number"], input[type="password"]{
+input[type="text"], input[type="tel"], input[type="number"], input[type="password"], input[type="search"]{
   height: 50px;
   display: block;
   margin: 0 auto;

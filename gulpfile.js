@@ -18,6 +18,7 @@ gulp.task('build', () => {
 
 function build_react() {
   gulp.src([
+    'src_react/util.js',
     'src_react/components/home_button.jsx',
     'src_react/components/dispatcher.js',
     'src_react/components/add_store.jsx',

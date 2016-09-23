@@ -39,7 +39,7 @@ class Login_Page extends React.Component {
       }
 
       var req = new XMLHttpRequest();
-      req.open("POST", '/user' + key);
+      req.open("POST", '/auth' + key);
       req.setRequestHeader('Content-type', 'application/json');
       //console.log(JSON.stringify(data));
       req.send(JSON.stringify(data));
@@ -97,8 +97,9 @@ class Login_Page extends React.Component {
             id = "username" 
             onChange= { this.handleChange('username') }
           />
-          <label htmlFor="password">Password (optional--but good to have!)</label>
+          <label htmlFor="password">Password</label>
           <input 
+            required
             type = 'password' 
             value = {this.state.password}
             id = "password" 

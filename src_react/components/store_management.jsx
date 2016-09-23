@@ -21,8 +21,9 @@ class Store_Management_Page extends React.Component {
   }
   onRender() {
     var req = new XMLHttpRequest();
-    req.open("GET", "/" + localStorage.getItem('_user_id') + "/store/" + 
+    req.open("GET", "/user/" + localStorage.getItem('_user_id') + "/store/" + 
       this.props.active_store._id + "/manage");
+    req = set_HTTP_header(req);
     req.onreadystatechange = () => {
       if (req.readyState == 4) {
         var res = JSON.parse(req.responseText);
@@ -69,7 +70,7 @@ class Store_Management_Page extends React.Component {
               });
             }
           }
-          req.send();
+          set_HTTP_header(req).send();
         }
         else {
           this.setState({
@@ -98,8 +99,9 @@ class Store_Management_Page extends React.Component {
       contributors: this.state.contributors
     }
     var req = new XMLHttpRequest();
-    req.open("PUT",  "/" + localStorage.getItem('_user_id') + "/store/" + 
+    req.open("PUT",  "/user/" + localStorage.getItem('_user_id') + "/store/" + 
       this.props._id + "/manage");
+    req = set_HTTP_header(req);
  
     req.onreadystatechange = () => {
 
@@ -111,7 +113,7 @@ class Store_Management_Page extends React.Component {
       }
     }      
     req.setRequestHeader('Content-type', 'application/json');
-    req.send(JSON.stringify(data));
+    set_HTTP_header(req).send(JSON.stringify(data));
   }
   render() {
     var rows = [];

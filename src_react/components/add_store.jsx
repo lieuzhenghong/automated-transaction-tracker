@@ -4,8 +4,6 @@ class Add_Store_Page extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //When component mounts, send a GET request to the server to populate
-      //these fields 
       _id: '',
       name: '',
       owner: [],
@@ -40,12 +38,13 @@ class Add_Store_Page extends React.Component {
           req.onreadystatechange = () => {
             if (req.readyState == 4) {
               var res = JSON.parse(req.responseText);
+              console.log(res);
               this.setState({
                 output_content: res
               });
             }
           }
-          req.send();
+          set_HTTP_header(req).send();
         }
         else {
           this.setState({
@@ -70,8 +69,8 @@ class Add_Store_Page extends React.Component {
       contributors: this.state.contributors
     }
     var req = new XMLHttpRequest();
-    req.open("POST",  "/" + localStorage.getItem('_user_id') + '/store');
- 
+    req.open("POST",  "/user/" + localStorage.getItem('_user_id') + '/store');
+    req = set_HTTP_header(req);
     req.onreadystatechange = () => {
 
       if (req.readyState == 4) {
@@ -82,7 +81,7 @@ class Add_Store_Page extends React.Component {
       }
     }      
     req.setRequestHeader('Content-type', 'application/json');
-    req.send(JSON.stringify(data));
+    set_HTTP_header(req).send(JSON.stringify(data));
   }
   render() {
     var rows = [];
@@ -120,7 +119,6 @@ class Add_Store_Page extends React.Component {
         <form>
         <p>{this.state.status_message}</p>
         <p>Store name: {this.state.name}</p>
-        <p>Owner: {this.state.owner.username}</p>
         <div>
           Contributors:
           <ul>

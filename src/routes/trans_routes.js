@@ -12,10 +12,10 @@ var normalise_date = require('../utils/normalise.js');
 
 var trans_routes = express.Router({mergeParams: true});
 
-//Add these methods to trans_routes
 
 trans_routes.route('/')
   .get((req, res) => {
+    console.log('trans_routes called');
     console.log(req.params);
     var id = req.params._store_id;
     Trans.find({'_store_id': id}, (err, transactions) => {
