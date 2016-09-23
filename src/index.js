@@ -43,8 +43,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('./'));
 
-app.listen(3001, () => {  
-  console.log('expressjs listening on port 3001');
+app.listen(config.port, () => {  
+  console.log(`expressjs listening on port ${config.port}`);
 });
 
 /* -------------------------------------------
