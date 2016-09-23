@@ -6,7 +6,8 @@ var MongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var assert = require('assert');
-var url = 'mongodb://localhost:27017/transactions_db';
+// var url = 'mongodb://localhost:27017/transactions_db';
+const url = 'mongodb://heroku_n3t81wnq:79bdbh4phcu47c38v409b7peo7@ds035816.mlab.com:35816/heroku_n3t81wnq' || 'mongodb://localhost:27017/transactions_db';
 var jwt = require('jsonwebtoken');
 var transactions_db;
 
