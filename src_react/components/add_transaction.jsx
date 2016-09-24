@@ -89,7 +89,7 @@ var Add_Transaction_Page = React.createClass({
 
     
     var request = new XMLHttpRequest();
-    request.open("POST", "/" + localStorage.getItem('_user_id') + "/store/" + this.props.active_store._id + "/trans");
+    request.open("POST", "/user/" + localStorage.getItem('_user_id') + "/store/" + this.props.active_store._id + "/trans");
     request.setRequestHeader('Content-type', 'application/json');
     request = set_HTTP_header(request);
  

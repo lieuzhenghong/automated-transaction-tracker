@@ -1,3 +1,6 @@
+/*eslint no-undef: "error"*/
+/*eslint-env node*/
+
 'use strict';
 
 var express = require('express');
@@ -9,37 +12,37 @@ var store_routes = express.Router({mergeParams: true});
 
 store_routes.route('/')
   .get((req, res) => {
-  console.log(req.params);
-  var _user_id = req.params._user_id;
-  //Find only those stores which you are the owner (user id = yours) OR a store
-  //where you are a contributor
-  
-  Store.find({$or: [{_user_id: _user_id}, {contributors: { $in: [_user_id]}}]}, 
-  (err, stores) => {
-    if (err) return console.error(err);
-    let users = [];
-
-    // ES6 Promises 
-    // need to set Mongoose promises as native promises
-    mongoose.Promise = global.Promise;
-
-    //This worked and suddenly doesn't work despite me not touching anything?
+    console.log(req.params);
+    var _user_id = req.params._user_id;
+    //Find only those stores which you are the owner (user id = yours) OR a store
+    //where you are a contributor
     
-    var promises = [];
-    for (let i = 0; i < stores.length; i++) {
-      var query = User.findOne({_id: stores[i]._user_id});
-      promises[i] = query.exec();
-      promises[i].then(function(user) {
-        users.push(user);
-      })
-    }
-    Promise.all(promises).then(() => {
-      sendResponse({stores, users})
-    });
-    
-    function sendResponse(payload) {
-      res.send(payload)
-    }
+    Store.find({$or: [{_user_id: _user_id}, {contributors: { $in: [_user_id]}}]}, 
+    (err, stores) => {
+      if (err) return console.error(err);
+      let users = [];
+
+      // ES6 Promises 
+      // need to set Mongoose promises as native promises
+      mongoose.Promise = global.Promise;
+
+      //This worked and suddenly doesn't work despite me not touching anything?
+      
+      var promises = [];
+      for (let i = 0; i < stores.length; i++) {
+        var query = User.findOne({_id: stores[i]._user_id});
+        promises[i] = query.exec();
+        promises[i].then(function(user) {
+          users.push(user);
+        })
+      }
+      Promise.all(promises).then(() => {
+        sendResponse({stores, users})
+      });
+      
+      function sendResponse(payload) {
+        res.send(payload)
+      }
     });
   })
   .post((req, res) => {
@@ -75,18 +78,17 @@ store_routes.route('/:_store_id/manage')
         promises[i].then(function(user) {
           contributors.push(user);
           console.log('i am being called');
-
         });
       }
       let query = User.findOne({_id: store._user_id});
       promises.push(query.exec());
-      promises[promises.length-1].then(function(user) {owner = user;})
+      promises[promises.length-1].then(function(user) {owner = user;});
       //console.log(promises);
 
       Promise.all(promises).then(function() {
         res.send([store, owner, contributors]);
-      })
-    })
+      });
+    });
   })
   .put((req, res) => {
     console.log('hello');
@@ -100,7 +102,7 @@ store_routes.route('/:_store_id/manage')
         if (err) return console.error(err);
         console.log('store here');
         console.log(store);
-        res.json({success: true, message: "Store successfully updated."});
+        res.json({success: true, message: 'Store successfully updated.'});
       })
     })  
   })

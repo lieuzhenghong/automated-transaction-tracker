@@ -5,7 +5,6 @@ const babel = require('gulp-babel');
 const gutil = require('gulp-util');
 const concat = require('gulp-concat');
 const sourcemaps = require('gulp-sourcemaps');
-const browserify = require('browserify');
 
 gulp.task('default', ()=> {
   return gutil.log('Gulp is running!');

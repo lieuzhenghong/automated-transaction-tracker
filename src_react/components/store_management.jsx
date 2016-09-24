@@ -1,4 +1,11 @@
-'use strict'
+/*global React*/
+/*global set_HTTP_header:true*/
+/*eslint no-undef: "error"*/
+/*eslint-env node*/
+
+'use strict';
+
+
 
 class Store_Management_Page extends React.Component {
   constructor(props) {
@@ -13,7 +20,7 @@ class Store_Management_Page extends React.Component {
       contributors: [],
       output_content: [],
       status_message: ''
-    }
+    };
     this.onRender = this.onRender.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -21,8 +28,8 @@ class Store_Management_Page extends React.Component {
   }
   onRender() {
     var req = new XMLHttpRequest();
-    req.open("GET", "/user/" + localStorage.getItem('_user_id') + "/store/" + 
-      this.props.active_store._id + "/manage");
+    req.open('GET', '/user/' + localStorage.getItem('_user_id') + '/store/' + 
+      this.props.active_store._id + '/manage');
     req = set_HTTP_header(req);
     req.onreadystatechange = () => {
       if (req.readyState == 4) {
@@ -60,8 +67,9 @@ class Store_Management_Page extends React.Component {
       if (key === 'contributors') {
         // I have to debounce this
         if (e.target.value != '') { //Make sure I don't send a useless blank request
+          console.log(e.target.value);
           var req = new XMLHttpRequest();
-          req.open("GET", "/user/" + e.target.value);
+          req.open("GET", '/user/' + e.target.value);
           req.onreadystatechange = () => {
             if (req.readyState == 4) {
               var res = JSON.parse(req.responseText);
@@ -100,7 +108,7 @@ class Store_Management_Page extends React.Component {
     }
     var req = new XMLHttpRequest();
     req.open("PUT",  "/user/" + localStorage.getItem('_user_id') + "/store/" + 
-      this.props._id + "/manage");
+      this.props.active_store._id + "/manage");
     req = set_HTTP_header(req);
  
     req.onreadystatechange = () => {
