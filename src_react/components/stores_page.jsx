@@ -55,10 +55,7 @@ var Stores_Table = React.createClass({
     get = set_HTTP_header(get);
     get.onreadystatechange = () => {
       if (get.readyState == 4) {
-        console.log('OK');
         var res = JSON.parse(get.responseText);
-        console.log(res);
-
         this.setState({
           stores: res.stores,
           users: res.users
@@ -105,7 +102,6 @@ var Stores_Table_Row = React.createClass({
     var req = new XMLHttpRequest();
     var URL = ("/user/" + localStorage.getItem('_user_id') + "/store/" + 
         this.props.store._id + "/trans");
-    console.log(URL);
     req.open("GET", URL);
     req = set_HTTP_header(req);
     req.onreadystatechange = () => {

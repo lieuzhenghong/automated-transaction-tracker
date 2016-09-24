@@ -1,3 +1,5 @@
+/*eslint no-undef: "error"*/
+/*eslint-env node*/
 'use strict';
 
 const express = require('express');
@@ -12,7 +14,7 @@ user_routes.get('/:query', (req, res) => {
   // The reason I have to do these checks is because I get an error if I try to
   // cast the search string to an ObjectId
   //
-  function search(string) {
+  function search() {
     let regex_no = `^${req.params.query}.*`;
     let regex_name = `${req.params.query}.*`;
     User.find( {$or: [{username: {$regex: regex_name, $options: 'i'} }, 
@@ -21,7 +23,7 @@ user_routes.get('/:query', (req, res) => {
       else {
         res.json(users);  
       }
-    })
+    });
   }
   
   if (ObjectId.isValid(req.params.query)) {
@@ -40,7 +42,7 @@ user_routes.get('/:query', (req, res) => {
   else {
     search(req.params.query);
   } 
-})
+});
 
 user_routes.put('/:_id', (req, res) => {
   //First, check if the phone number is unique.
@@ -55,20 +57,20 @@ user_routes.put('/:_id', (req, res) => {
       });
     }
     else {
-     User.findOne({_id: req.params._id}, (err, user) => {
-      if (err) res.send(err);
-      user.username = req.body.username;
-      user.phone_number = req.body.phone_number;
-      user.save ((err) => {
-        if (err) return console.error(err);
+      User.findOne({_id: req.params._id}, (err, user) => {
+        if (err) res.send(err);
+        user.username = req.body.username;
+        user.phone_number = req.body.phone_number;
+        user.save ((err) => {
+          if (err) return console.error(err);
           res.json({
             success: true,
             message: 'Successfully changed user details!',
             user: user
-          })
-        })
-      })
+          });
+        });
+      });
     }
-  })
+  });
 });
 module.exports = user_routes;

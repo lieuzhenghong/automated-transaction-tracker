@@ -6,7 +6,7 @@
 var express = require('express');
 var Store = require('../models/store.js');
 var User = require('../models/user.js');
-var mongoose = require('mongoose')
+var mongoose = require('mongoose');
 
 var store_routes = express.Router({mergeParams: true});
 
@@ -34,14 +34,14 @@ store_routes.route('/')
         promises[i] = query.exec();
         promises[i].then(function(user) {
           users.push(user);
-        })
+        });
       }
       Promise.all(promises).then(() => {
-        sendResponse({stores, users})
+        sendResponse({stores, users});
       });
       
       function sendResponse(payload) {
-        res.send(payload)
+        res.send(payload);
       }
     });
   })
@@ -103,9 +103,9 @@ store_routes.route('/:_store_id/manage')
         console.log('store here');
         console.log(store);
         res.json({success: true, message: 'Store successfully updated.'});
-      })
-    })  
-  })
+      });
+    });  
+  });
 
 
 module.exports = store_routes;

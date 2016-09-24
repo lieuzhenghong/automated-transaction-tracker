@@ -1,11 +1,10 @@
 /*global React*/
 /*global set_HTTP_header:true*/
 /*eslint no-undef: "error"*/
+/*eslint no-console: "off"*/
 /*eslint-env node*/
 
 'use strict';
-
-
 
 class Store_Management_Page extends React.Component {
   constructor(props) {
@@ -21,34 +20,41 @@ class Store_Management_Page extends React.Component {
       output_content: [],
       status_message: ''
     };
-    this.onRender = this.onRender.bind(this);
+    this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-  onRender() {
-    var req = new XMLHttpRequest();
-    req.open('GET', '/user/' + localStorage.getItem('_user_id') + '/store/' + 
-      this.props.active_store._id + '/manage');
-    req = set_HTTP_header(req);
-    req.onreadystatechange = () => {
-      if (req.readyState == 4) {
-        var res = JSON.parse(req.responseText);
-        console.log(res);
-        // First item is the store object, 
-        // second the owner object,
-        // third item the array of contributors
-        this.setState({
-          _id: res[0]._id,
-          name: res[0].name,
-          contributors_ids: res[0].contributors,
-          owner: res[1],
-          contributors: res[2]
-        })
-        console.log(this.state);
-      }
+  componentWillReceiveProps(nextprops) {
+    console.log(`prop changed: ${nextprops.active_page}`);
+    if (nextprops.active_page != 'Store_Management_Page') {
     }
-    req.send();
+    else {
+      console.log('componentWillReceiveProps called')
+      var req = new XMLHttpRequest();
+      req.open('GET', `/user/${localStorage.getItem('_user_id')}
+      /store/${nextprops.active_store._id}/manage`);
+      console.log(set_HTTP_header(req));
+      console.log(req);
+      req.onreadystatechange = () => {
+        if (req.readyState == 4) {
+          var res = JSON.parse(req.responseText);
+          console.log(res);
+          // First item is the store object, 
+          // second the owner object,
+          // third item the array of contributors
+          this.setState({
+            _id: res[0]._id,
+            name: res[0].name,
+            contributors_ids: res[0].contributors,
+            owner: res[1],
+            contributors: res[2]
+          });
+          console.log(this.state);
+        }
+      };
+      req.send();
+    }
   }
   handleClick(e) {
     console.log('clicked');
@@ -59,7 +65,7 @@ class Store_Management_Page extends React.Component {
     this.setState({
       contributors_id: this.state.contributors_id,
       contributors: this.state.contributors
-    })
+    });
     console.log(this.state.contributors);
   }
   handleChange(key) {
@@ -69,7 +75,7 @@ class Store_Management_Page extends React.Component {
         if (e.target.value != '') { //Make sure I don't send a useless blank request
           console.log(e.target.value);
           var req = new XMLHttpRequest();
-          req.open("GET", '/user/' + e.target.value);
+          req.open('GET', '/user/' + e.target.value);
           req.onreadystatechange = () => {
             if (req.readyState == 4) {
               var res = JSON.parse(req.responseText);
@@ -77,7 +83,7 @@ class Store_Management_Page extends React.Component {
                 output_content: res
               });
             }
-          }
+          };
           set_HTTP_header(req).send();
         }
         else {
@@ -92,7 +98,7 @@ class Store_Management_Page extends React.Component {
         this.setState(state);
         //console.log(this.state);
       }
-    }
+    };
   }
   handleSubmit(e) {
     //Send a PUT request to the server
@@ -105,10 +111,10 @@ class Store_Management_Page extends React.Component {
       _user_id: this.state._user_id,
       name: this.state.name,
       contributors: this.state.contributors
-    }
+    };
     var req = new XMLHttpRequest();
-    req.open("PUT",  "/user/" + localStorage.getItem('_user_id') + "/store/" + 
-      this.props.active_store._id + "/manage");
+    req.open('PUT',  '/user/' + localStorage.getItem('_user_id') + '/store/' + 
+      this.props.active_store._id + '/manage');
     req = set_HTTP_header(req);
  
     req.onreadystatechange = () => {
@@ -119,7 +125,7 @@ class Store_Management_Page extends React.Component {
           status_message: (res.success ? 'Success!' : 'Failure!') + res.message 
         });
       }
-    }      
+    };      
     req.setRequestHeader('Content-type', 'application/json');
     set_HTTP_header(req).send(JSON.stringify(data));
   }
@@ -134,7 +140,7 @@ class Store_Management_Page extends React.Component {
           onClick={this.handleClick}>
           <td>{c[i].username}</td>
           <td>{c[i].phone_number}</td>
-          </tr>)
+          </tr>);
     }
 
     var contributors = [];
@@ -153,7 +159,6 @@ class Store_Management_Page extends React.Component {
     }
 
     else {
-      this.onRender();
       return(
         <div id="body">
         <h1>Change store details</h1>
@@ -203,7 +208,7 @@ class Store_Management_Page extends React.Component {
         <input type='submit' value='Save changes' onClick={this.handleSubmit}/>
         </form>
         </div>
-        )
+        );
     
     }
   }

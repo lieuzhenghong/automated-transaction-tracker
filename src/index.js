@@ -1,3 +1,6 @@
+/*eslint no-undef: "error"*/
+/*eslint no-console: "error"*/
+/*eslint-env node*/
 'use strict';
 
 var express = require('express');
@@ -6,9 +9,6 @@ var MongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var assert = require('assert');
-// var url = 'mongodb://localhost:27017/transactions_db';
-var jwt = require('jsonwebtoken');
-var transactions_db;
 
 
 const database_reset = require('./utils/database_reset.js');
@@ -26,10 +26,9 @@ var client = require('twilio')(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_TOK
  *
  * -------------------------------------------- */
 
-MongoClient.connect(config.database, (err,db) => {
+MongoClient.connect(config.database, (err, db) => {
   assert.equal(null, err);
   console.log(`connected to mongodb ${config.database}`);
-  transactions_db = db;
 });
 
 mongoose.connect(config.database);
@@ -72,7 +71,7 @@ app.get('/db_reset', (req,res) => {
   res.send('OK');
 });
 
-var auth_routes = require('./routes/auth_routes.js')
+var auth_routes = require('./routes/auth_routes.js');
 app.use('/auth', auth_routes);
 
 /* ------------------------------------
@@ -81,7 +80,7 @@ app.use('/auth', auth_routes);
  *
  * ------------------------------------*/
 
-var api_routes = require('./routes/api_routes.js')
+var api_routes = require('./routes/api_routes.js');
 app.use('/', api_routes);
 
 // This API route checks for whether the JWT is legit or not.
@@ -132,32 +131,32 @@ function send_message(err, transactions, days) {
     transactions.forEach(function(trans) {
       if (days <= 0) {
         client.sendMessage({
-          to: ("+65"+trans.phone_number),
+          to: ('+65'+trans.phone_number),
           from: config.TWILIO_TEST_NO,
-          body: ("Dear " + trans.name + ", the loan you made on " + trans.date + 
-                "is due today. Please return the items loaned to Log Branch.")        
-          }, (err, text) => {
+          body: ('Dear ' + trans.name + ', the loan you made on ' + trans.date + 
+                'is due today. Please return the items loaned to Log Branch.')        
+        }, (err, text) => {
           console.log('you sent: ' + text.body);
           console.log('status of msg: ' + text.status);
         });
       }
       else if (days === 3) {
         client.sendMessage({
-          to: ("+65"+trans.phone_number),
+          to: ('+65'+trans.phone_number),
           from: config.TWILIO_TEST_NO,
-          body: ("Dear " + trans.name + ", the loan you made on " + 
-                trans.date + "is due in three days.")        
-          }, (err, text) => {
+          body: ('Dear ' + trans.name + ', the loan you made on ' + 
+                trans.date + 'is due in three days.')        
+        }, (err, text) => {
           console.log('you sent: ' + text.body);
           console.log('status of msg: ' + text.status);
         });
       }
       else if (days === 7){
-         client.sendMessage({
-          to: ("+65"+trans.phone_number),
+        client.sendMessage({
+          to: ('+65'+trans.phone_number),
           from: config.TWILIO_TEST_NO,
-          body: ("Dear " + trans.name + ", the loan you made on " + 
-                trans.date + "is due in seven days.")
+          body: ('Dear ' + trans.name + ', the loan you made on ' + 
+                trans.date + 'is due in seven days.')
         }, (err, text) => {
           console.log('you sent: ' + text.body);
           console.log('status of msg: ' + text.status);
@@ -184,26 +183,26 @@ function get_all_trans_expiring_in(days) {
 var schedule = require('node-schedule');
 
 var rule = new schedule.RecurrenceRule();
-  rule.hour = 8;
-  rule.minute = 0;
-  //rule.second = 0;
+rule.hour = 8;
+rule.minute = 0;
+//rule.second = 0;
 
 var j = schedule.scheduleJob(rule, function(){
-  console.log("cronjob called");
+  console.log('cronjob called');
   get_all_trans_expiring_in(7);
   get_all_trans_expiring_in(3);
   get_all_trans_expiring_in(0);
 });
 
 function test(number) {
- client.sendMessage({
-  to: ( "+65"+ number.toString() ),
-  from: config.TWILIO_TEST_NO,
-  body: "Hi! Welcome to Lieu's Loan Tracker service."
-}, (err, text) => {
-  console.log('you sent: ' + text.body);
-  console.log('status of msg: ' + text.status);
-}); 
+  client.sendMessage({
+    to: ( "+65"+ number.toString() ),
+    from: config.TWILIO_TEST_NO,
+    body: "Hi! Welcome to Lieu's Loan Tracker service."
+  }, (err, text) => {
+    console.log('you sent: ' + text.body);
+    console.log('status of msg: ' + text.status);
+  }); 
 }
 
 

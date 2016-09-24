@@ -18,7 +18,6 @@ function debounce(func, wait, immediate) {
   };
 }
 
-
 function set_HTTP_header(request) {
   const token = localStorage.getItem('token');
 
