@@ -8,4 +8,3 @@ exports.secret = 'testing'; //Used to sign a JSON Web Token
 exports.token_expiry_time = '14 days'; // Token expiry time
 exports.port = process.env.PORT || 3001;
 exports.database = process.env.MONGODB_URI || 'mongodb://localhost:27017/transactions_db';
-

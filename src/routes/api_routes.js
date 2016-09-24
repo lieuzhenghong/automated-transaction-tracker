@@ -15,7 +15,7 @@ api_routes.use(function(req, res, next) {
         console.error(err);
         res.json({
           success: false, 
-          message: "Failed to auth token. <a href='login.html'> Try logging in again? </a>"
+          message: err
         });
       }
       else {

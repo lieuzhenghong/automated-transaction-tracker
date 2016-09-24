@@ -70,6 +70,7 @@ class Add_Store_Page extends React.Component {
     }
     var req = new XMLHttpRequest();
     req.open("POST",  "/user/" + localStorage.getItem('_user_id') + '/store');
+    req.setRequestHeader('Content-type', 'application/json');
     req = set_HTTP_header(req);
     req.onreadystatechange = () => {
 
@@ -80,8 +81,7 @@ class Add_Store_Page extends React.Component {
         });
       }
     }      
-    req.setRequestHeader('Content-type', 'application/json');
-    set_HTTP_header(req).send(JSON.stringify(data));
+    req.send(JSON.stringify(data));
   }
   render() {
     var rows = [];

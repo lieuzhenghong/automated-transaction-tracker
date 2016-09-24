@@ -56,7 +56,6 @@ class User_Management_Page extends React.Component {
     }
     var req = new XMLHttpRequest();
     req.open("PUT", "/user/" + localStorage.getItem('_user_id'));
-    req = set_HTTP_header(req);
     req.onreadystatechange = () => {
       var res = JSON.parse(req.responseText);
       console.log(res);
@@ -66,6 +65,7 @@ class User_Management_Page extends React.Component {
       this.props.onUpdate(res.user);
     }      
     req.setRequestHeader('Content-type', 'application/json');
+    req = set_HTTP_header(req);
     req.send(JSON.stringify(data));
   }
   render() {
