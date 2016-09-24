@@ -170,7 +170,7 @@ class Store_Management_Page extends React.Component {
           onChange={this.handleChange('name')}
           />
 
-        <User_Search_Widget users={this.state.contributors} passUsers={this.handleUsers}/>
+        <User_Search_Widget owner={this.state.owner} users={this.state.contributors} passUsers={this.handleUsers}/>
           
         <input type='submit' value='Save changes' onClick={this.handleSubmit}/>
         </form>

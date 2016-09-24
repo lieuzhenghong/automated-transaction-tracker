@@ -24,7 +24,8 @@ class User_Search_Widget extends React.Component {
     console.log('clicked');
     let clicked = e.target.parentNode.id;
     //console.log(this.state.output_content[clicked]);
-    if (this.state.selected_users_id.indexOf(this.state.users[clicked]._id) != -1) {
+    if (this.state.selected_users_id.indexOf(this.state.users[clicked]._id) != -1 || 
+        this.props.owner.indexOf(this.state.users[clicked]._id) != -1 ) {
       console.log('contributor already exists');
     }
     else {
@@ -58,7 +59,7 @@ class User_Search_Widget extends React.Component {
         else {
           this.setState({
             users: []
-          })
+          });
         }
       }
     };
