@@ -1,6 +1,7 @@
 /*eslint no-undef: "error"*/
-/*eslint no-console: "error"*/
+/*eslint no-console: "off"*/
 /*eslint-env node*/
+
 'use strict';
 
 var express = require('express');
@@ -10,8 +11,11 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var assert = require('assert');
 
-
 const database_reset = require('./utils/database_reset.js');
+
+const Trans = require('./models/trans.js');
+const User = require('./models/user.js');
+const Store = require('./models/store.js');
 
 /* ------------
  * TWILIO
@@ -60,11 +64,16 @@ var normalise_date = require('./utils/normalise.js');
  *
  * ------------------------------------------- */
 
-app.get('/test_message/:phone_number', (req,res) => {
+app.get('/test_message/', (req,res) => {
   console.log(req.query);
-  test(req.query.phone_number);
-  res.send('Sending a message to: ' + req.query.phone_number);
+  test();
+  res.send('Check your phone.');
 });
+
+app.get('/ping', (req, res) => {
+  console.log('Ping!');
+  res.send('Ping!');
+})
 
 app.get('/db_reset', (req,res) => {
   database_reset();
@@ -102,7 +111,8 @@ store_routes.use('/:_store_id/trans', trans_routes);
  * Scheduler. 
  *
  * -------------------- */
-    
+
+
 function days_till_expiry(date) {
   return(Math.ceil((date - Date.now())/(1000*60*60*24)));
 }
@@ -138,7 +148,9 @@ function send_message(err, transactions, days) {
         }, (err, text) => {
           console.log('you sent: ' + text.body);
           console.log('status of msg: ' + text.status);
-        });
+        });        
+
+        send_message_to_store_owner(trans);
       }
       else if (days === 3) {
         client.sendMessage({
@@ -171,7 +183,7 @@ function get_all_trans_expiring_in(days) {
     find().
     where('expiry_date').
     lt( (Date.now()) + (1000*3600*24*days) ).
-    //this is obviously broken
+    //!!! this is obviously broken
     gt( (Date.now()) + (1000*3600*24*(days-1)) ).
     where('returned').equals(false).
     exec(function (err, doc) {
@@ -205,4 +217,24 @@ function test(number) {
   }); 
 }
 
+function send_message_to_store_owner(trans) {
+  let msg = '';
 
+  Trans.findOne({_id: trans._id}, (err, trans) => {
+    Store.findOne({_id: trans._store_id}, (err, store) => {
+      User.findOne({_id: store._user_id}, (err, user) => {
+        client.sendMessage({
+          to: ('+65'+ user.phone_number),
+          from: config.TWILIO_TEST_NO,
+          body: (`The loan made by ${trans.name} on ${trans.date} is due today.` + 
+                 `Please remind the loaner to return the loan to ${store.name}.`)
+        }, (err, text) => {
+          msg = text;
+          console.log('you sent: ' + text.body);
+          console.log('status of msg: ' + text.status);
+          return (msg);
+        });    
+      });
+    });
+  });
+}

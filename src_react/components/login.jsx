@@ -80,7 +80,6 @@ class Login_Page extends React.Component {
     return (
         <div id = "body">
           <h1> Automated transaction tracker </h1>
-          <h1> Login or sign up </h1>
           <div id = "message"><p>{this.state.status_message}</p></div>
           <label htmlFor="phone_number">Phone number. Must be unique.</label>
           <input

@@ -106,11 +106,6 @@ var Login_Page = function (_React$Component) {
           ' Automated transaction tracker '
         ),
         React.createElement(
-          'h1',
-          null,
-          ' Login or sign up '
-        ),
-        React.createElement(
           'div',
           { id: 'message' },
           React.createElement(

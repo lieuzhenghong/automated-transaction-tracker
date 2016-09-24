@@ -26,8 +26,6 @@ store_routes.route('/')
       // need to set Mongoose promises as native promises
       mongoose.Promise = global.Promise;
 
-      //This worked and suddenly doesn't work despite me not touching anything?
-      
       var promises = [];
       for (let i = 0; i < stores.length; i++) {
         var query = User.findOne({_id: stores[i]._user_id});

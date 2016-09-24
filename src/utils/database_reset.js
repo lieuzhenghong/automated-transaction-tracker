@@ -25,12 +25,9 @@ function database_reset() {
 }
 
 function add_data() {
-  
-  //Remove this asap
-
 
   var user = new User({
-  phone_number: '92337545',
+  phone_number: '90275063',
   username: "2WO Shany Ong",
   password: bcrypt.hashSync('shany'),
   admin: false
@@ -69,7 +66,7 @@ function add_data() {
       sto.save((err) => {
         if (err) return console.error(err);
 
-        /* var tra = new Trans({
+        var tra = new Trans({
           _store_id: sto._id,
           date: Date.now(),
           expiry_date: ((Date.now())+1000*60*60*24*7),
@@ -80,12 +77,12 @@ function add_data() {
         tra.save((err) => {
           if (err) return console.error(err);
 
-          */
+          
 
           console.log(user, user1, user2);
           console.log(sto);
           // console.log(tra);
-      //});
+      });
     });
   });
   });

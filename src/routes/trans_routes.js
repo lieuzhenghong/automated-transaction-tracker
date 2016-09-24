@@ -64,7 +64,6 @@ trans_routes.route('/')
         return console.error(err);
       }
       else {
-        /*
         client.sendMessage({
           to: ("+65"+ tr.phone_number),
           from: config.TWILIO_TEST_NO,
@@ -74,7 +73,6 @@ trans_routes.route('/')
           console.log("you sent: " + text.body);
           console.log("status of msg: " + text.status);
           });
-        */
         res.send(tr);
       }
     });
@@ -97,7 +95,6 @@ trans_routes.put('/:_trans_id/renew', (req,res) => {
       trans.save((err) => {
         if (err) return console.error(err);
         console.log(trans);
-        /*
         client.sendMessage({
           to: ("+65"+ trans.phone_number),
           from: config.TWILIO_TEST_NO,
@@ -107,7 +104,6 @@ trans_routes.put('/:_trans_id/renew', (req,res) => {
           console.log("you sent: " + text.body);
           console.log("status of msg: " + text.status);
           });
-        */
         res.send(trans);
       });
     }
