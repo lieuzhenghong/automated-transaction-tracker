@@ -1,3 +1,7 @@
+/*eslint no-undef: "error"*/
+/*eslint no-console: "off"*/
+/*eslint-env node*/
+
 const bcrypt = require('bcrypt-nodejs');
 const MongoClient = require('mongodb').MongoClient;
 const mongoose = require('mongoose');
@@ -66,6 +70,7 @@ function add_data() {
       sto.save((err) => {
         if (err) return console.error(err);
 
+      /*
         var tra = new Trans({
           _store_id: sto._id,
           date: Date.now(),
@@ -82,7 +87,8 @@ function add_data() {
           console.log(user, user1, user2);
           console.log(sto);
           // console.log(tra);
-      });
+      }); 
+      */
     });
   });
   });

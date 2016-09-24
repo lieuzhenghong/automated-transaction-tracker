@@ -1,3 +1,7 @@
+/*eslint no-undef: "error"*/
+/*eslint no-console: "off"*/
+/*eslint-env node*/
+
 'use strict';
 
 const bcrypt = require('bcrypt-nodejs');
@@ -19,19 +23,26 @@ auth_routes.post('/authenticate', (req, res) => {
     }
     else if (ph_no) {
       bcrypt.compare(req.body.password, ph_no.password, (err, result) => {
-        if (err) {
-          console.error(err);
-          res.json({
-            success: false,
-            message: err
-          });
+        if (err) { 
+          if (err === 'Not a valid BCrypt hash.') {
+            res.json({
+              success: false,
+              message: err
+            });
+          }
+          else if (result == false) {
+            res.json({
+              success: false,
+              message: 'Wrong password.'
+            });
+          } 
+          else {
+            res.json({
+              success: false,
+              message: err
+            });
+          }
         }
-        else if (result == false) {
-          res.json({
-            success: false,
-            message: 'Wrong password.'
-          });
-        } 
         else {
           //create a json token
           //console.log(ph_no);
@@ -50,9 +61,9 @@ auth_routes.post('/authenticate', (req, res) => {
             token: token
           });
         }
-      })
+      });
     }
-  })
+  });
 });
 
 auth_routes.post('/sign_up', (req, res) => {
@@ -68,13 +79,13 @@ auth_routes.post('/sign_up', (req, res) => {
     if (err) throw err;
 
     if (phone_number) {
-      res.json({success: false, message: 'Phone number already exists.'})
+      res.json({success: false, message: 'Phone number already exists.'});
     }
 
     if (!phone_number) {
       user.save((err) => {
         if (err) throw err;
-        res.json({success: true, message: 'Sign up successful.'})
+        res.json({success: true, message: 'Sign up successful.'});
       });
     }
     
