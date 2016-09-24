@@ -127,7 +127,7 @@ var Stores_Table_Row = React.createClass({
         <tr>
         <td> { this.props.store.name }</td>
         <td> { this.props.user.username }</td>
-        <td><button onClick = {this.getTransactions}>View</button><button onClick = {this.manageStore}>Edit</button></td>
+        <td><button onClick = {this.getTransactions}>View loans</button><button onClick = {this.manageStore}>Edit</button></td>
         </tr>
         )
   }
