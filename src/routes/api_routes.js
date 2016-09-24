@@ -9,13 +9,14 @@ const api_routes = express.Router({mergeParams: true});
 
 api_routes.use(function(req, res, next) {
   var token = req.body.token || req.query.token || req.headers['x-access-token'];
+  console.log(token);
   if (token) {
     jwt.verify(token, secret, (err, decoded) => {
       if (err) {
         console.error(err);
         res.json({
           success: false, 
-          message: err
+          message: err.message
         });
       }
       else {

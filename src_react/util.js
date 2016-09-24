@@ -29,3 +29,37 @@ function set_HTTP_header(request) {
     return('Error: token could not be found. Check localStorage');
   }
 }
+
+/*
+// 1
+req.open('PUT', `/user/${localStorage.getItem('_user_id')}/store/` +
+this.props.active_store._id + '/manage'); 
+
+// 2 (2 things)
+request.setRequestHeader('Content-type', 'application/json');
+set_HTTP_header(request);
+
+// 3
+req.send(JSON.stringify(data));
+*/
+
+handle_request(
+  'PUT', 
+  (`/user/${localStorage.getItem('_user_id')}/store/${this.props.active_store._id}/manage`), 
+  data, 
+  set_request_headers, 
+  (request) => {request.send(JSON.stringify(data));}
+);
+
+function handle_request(action, uri, data, set_headers, send_req) {
+  var req = new XMLHttpRequest();
+  req.open(action, uri);
+  set_headers(req, data, send_req);
+}
+
+function set_request_headers(request, data, send_req) {
+  request.setRequestHeader('Content-type', 'application/json');
+  set_HTTP_header(request);
+  send_req(request, data);
+}
+
