@@ -10,17 +10,16 @@ var Stores_Page = React.createClass({
       return(null);
     }
     else {
-    return (
-      <div className="page">
-      <Stores_Table />
-      <Add_Store_Button onClick = {this.handleClick}/>
+      return (
+        <div className="page">
+        <Stores_Table />
+        <Add_Store_Button onClick = {this.handleClick}/>
 
-      </div>
-    )
-
+        </div>
+      );
     }
   }
-})
+});
 
 var Add_Store_Button = React.createClass({
   handleClick: function() {
@@ -87,6 +86,7 @@ var Stores_Table = React.createClass({
             <tr>
               <th>Store</th>
               <th>Owner</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -125,9 +125,9 @@ var Stores_Table_Row = React.createClass({
   render: function() {
     return (
         <tr>
-        <td onClick = {this.getTransactions}>{ this.props.store.name }</td>
-        <td onClick = {this.getTransactions}>{ this.props.user.username }</td>
-        <td><button onClick = {this.manageStore}>Edit</button></td>
+        <td> { this.props.store.name }</td>
+        <td> { this.props.user.username }</td>
+        <td><button onClick = {this.getTransactions}>View</button><button onClick = {this.manageStore}>Edit</button></td>
         </tr>
         )
   }

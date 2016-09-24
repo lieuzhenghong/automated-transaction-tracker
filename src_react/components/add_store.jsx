@@ -1,4 +1,9 @@
-'use strict'
+/*global React*/
+/*global set_HTTP_header:true*/
+/*eslint no-undef: "error"*/
+/*eslint no-console: "off"*/
+/*eslint-env node*/
+'use strict';
 
 class Add_Store_Page extends React.Component {
   constructor(props) {
@@ -11,7 +16,7 @@ class Add_Store_Page extends React.Component {
       contributors: [],
       output_content: [],
       status_message: ''
-    }
+    };
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -20,13 +25,18 @@ class Add_Store_Page extends React.Component {
     console.log('clicked');
     let clicked = e.target.parentNode.id;
     //console.log(this.state.output_content[clicked]);
-    this.state.contributors.push(this.state.output_content[clicked]);
-    this.state.contributors_ids.push(this.state.output_content[clicked]._id);
-    this.setState({
-      contributors_id: this.state.contributors_id,
-      contributors: this.state.contributors
-    })
-    console.log(this.state.contributors);
+    if (this.state.contributors_ids.indexOf(this.state.output_content[clicked]._id) != -1) {
+      console.log('contributor already exists');
+    }
+    else {
+      this.state.contributors.push(this.state.output_content[clicked]);
+      this.state.contributors_ids.push(this.state.output_content[clicked]._id);
+      this.setState({
+        contributors_id: this.state.contributors_id,
+        contributors: this.state.contributors
+      });
+      console.log(this.state.contributors);
+    }
   }
   handleChange(key) {
     return (e) => {
@@ -34,7 +44,7 @@ class Add_Store_Page extends React.Component {
         // I have to debounce this
         if (e.target.value != '') { //Make sure I don't send a useless blank request
           var req = new XMLHttpRequest();
-          req.open("GET", "/user/" + e.target.value);
+          req.open('GET', '/user/' + e.target.value);
           req.onreadystatechange = () => {
             if (req.readyState == 4) {
               var res = JSON.parse(req.responseText);
@@ -43,7 +53,7 @@ class Add_Store_Page extends React.Component {
                 output_content: res
               });
             }
-          }
+          };
           set_HTTP_header(req).send();
         }
         else {
@@ -58,7 +68,7 @@ class Add_Store_Page extends React.Component {
         this.setState(state);
         //console.log(this.state);
       }
-    }
+    };
   }
   handleSubmit(e) {
     e.preventDefault();
@@ -67,20 +77,21 @@ class Add_Store_Page extends React.Component {
       _user_id: localStorage.getItem('_user_id'),
       name: this.state.name,
       contributors: this.state.contributors
-    }
+    };
     var req = new XMLHttpRequest();
-    req.open("POST",  "/user/" + localStorage.getItem('_user_id') + '/store');
-    req.setRequestHeader('Content-type', 'application/json');
-    req = set_HTTP_header(req);
-    req.onreadystatechange = () => {
+    req.open('POST',  '/user/' + localStorage.getItem('_user_id') + '/store');
 
+    req.onreadystatechange = () => {
       if (req.readyState == 4) {
         var res = JSON.parse(req.responseText);
         console.log(res);this.setState({
           status_message: (res.success ? 'Success! ' : 'Failure! ') + res.message 
         });
       }
-    }      
+    };
+
+    req.setRequestHeader('Content-type', 'application/json');
+    req = set_HTTP_header(req);      
     req.send(JSON.stringify(data));
   }
   render() {
@@ -94,7 +105,7 @@ class Add_Store_Page extends React.Component {
           onClick={this.handleClick}>
           <td>{c[i].username}</td>
           <td>{c[i].phone_number}</td>
-          </tr>)
+          </tr>);
     }
 
     var contributors = [];
@@ -161,7 +172,7 @@ class Add_Store_Page extends React.Component {
         <input type='submit' value='Save changes' onClick={this.handleSubmit}/>
         </form>
         </div>
-        )
+        );
     
     }
   }

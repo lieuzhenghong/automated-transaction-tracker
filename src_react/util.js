@@ -43,23 +43,23 @@ set_HTTP_header(request);
 req.send(JSON.stringify(data));
 */
 
-handle_request(
-  'PUT', 
-  (`/user/${localStorage.getItem('_user_id')}/store/${this.props.active_store._id}/manage`), 
-  data, 
-  set_request_headers, 
-  (request) => {request.send(JSON.stringify(data));}
-);
-
-function handle_request(action, uri, data, set_headers, send_req) {
+function make_request(action, uri, when_response, data) {
   var req = new XMLHttpRequest();
   req.open(action, uri);
-  set_headers(req, data, send_req);
+  req.onreadystatechange = () => {
+    if (req.readyState == 4) {
+      when_response(req);
+    } 
+  };
+  set_request_headers(req, data);
 }
 
-function set_request_headers(request, data, send_req) {
+function set_request_headers(request, data) {
   request.setRequestHeader('Content-type', 'application/json');
   set_HTTP_header(request);
-  send_req(request, data);
+  send_data(request, data);
 }
 
+function send_data(request, data){
+  request.send(JSON.stringify(data));
+}

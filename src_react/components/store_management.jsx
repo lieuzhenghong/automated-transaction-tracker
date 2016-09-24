@@ -30,7 +30,7 @@ class Store_Management_Page extends React.Component {
     if (nextprops.active_page != 'Store_Management_Page') {
     }
     else {
-      console.log('componentWillReceiveProps called')
+      console.log('componentWillReceiveProps called');
       var req = new XMLHttpRequest();
       req.open('GET', `/user/${localStorage.getItem('_user_id')}
       /store/${nextprops.active_store._id}/manage`);
@@ -60,13 +60,18 @@ class Store_Management_Page extends React.Component {
     console.log('clicked');
     let clicked = e.target.parentNode.id;
     //console.log(this.state.output_content[clicked]);
-    this.state.contributors.push(this.state.output_content[clicked]);
-    this.state.contributors_ids.push(this.state.output_content[clicked]._id);
-    this.setState({
-      contributors_id: this.state.contributors_id,
-      contributors: this.state.contributors
-    });
-    console.log(this.state.contributors);
+    if (this.state.contributors_ids.indexOf(this.state.output_content[clicked]._id) != -1) {
+      console.log('contributor already exists');
+    }
+    else {
+      this.state.contributors.push(this.state.output_content[clicked]);
+      this.state.contributors_ids.push(this.state.output_content[clicked]._id);
+      this.setState({
+        contributors_id: this.state.contributors_id,
+        contributors: this.state.contributors
+      });
+      console.log(this.state.contributors);
+    }
   }
   handleChange(key) {
     return (e) => {
@@ -101,33 +106,28 @@ class Store_Management_Page extends React.Component {
     };
   }
   handleSubmit(e) {
-    //Send a PUT request to the server
-    // PUT /:_store_id/manage
     e.preventDefault();
     console.log('sending PUT request');
-    //Send a POST request to the server
-    // The server needs to check that this phone number isn't already used
     var data = {
-      _user_id: this.state._user_id,
+      _user_id: localStorage.getItem('_user_id'),
       name: this.state.name,
       contributors: this.state.contributors
     };
-    var req = new XMLHttpRequest();
-    req.open('PUT',  '/user/' + localStorage.getItem('_user_id') + '/store/' + 
-      this.props.active_store._id + '/manage');
-    req = set_HTTP_header(req);
- 
-    req.onreadystatechange = () => {
+    make_request (
+      'PUT', 
+      (`/user/${localStorage.getItem('_user_id')}/store/${this.props.active_store._id}/manage`),
+      show_message.bind(this),
+      data
+    );
 
-      if (req.readyState == 4) {
-        var res = JSON.parse(req.responseText);
-        console.log(res);this.setState({
-          status_message: (res.success ? 'Success!' : 'Failure!') + res.message 
-        });
-      }
-    };      
-    req.setRequestHeader('Content-type', 'application/json');
-    set_HTTP_header(req).send(JSON.stringify(data));
+    function show_message(request){
+      var res = JSON.parse(request.responseText);
+      console.log(res);
+      this.setState({
+        status_message: (res.success ? 'Success! ' : 'Failure! ') + res.message 
+      });
+    }
+
   }
   render() {
     var rows = [];
