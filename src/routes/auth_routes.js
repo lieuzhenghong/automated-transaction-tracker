@@ -20,9 +20,10 @@ auth_routes.post('/authenticate', (req, res) => {
     else if (ph_no) {
       bcrypt.compare(req.body.password, ph_no.password, (err, result) => {
         if (err) {
+          console.error(err);
           res.json({
             success: false,
-            message: 'Unknown error.'
+            message: err
           });
         }
         else if (result == false) {
@@ -59,7 +60,7 @@ auth_routes.post('/sign_up', (req, res) => {
     // I have to strip phone number of spaces.
     phone_number: req.body.phone_number,
     username: req.body.username,
-    password: req.body.password,
+    password: bcrypt.hashSync(req.body.password),
     admin: false
   });
 
