@@ -56,8 +56,9 @@ img {
  * --------------- */
   
 h1 {
-  font-size: 2em;
-  line-height: 2em;
+  font-size: 1.4em;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 #content {

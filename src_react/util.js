@@ -44,6 +44,7 @@ req.send(JSON.stringify(data));
 */
 
 function make_request(action, uri, when_response, data) {
+  if (typeof data === 'undefined') { data = null; }
   var req = new XMLHttpRequest();
   req.open(action, uri);
   req.onreadystatechange = () => {

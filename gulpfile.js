@@ -20,6 +20,7 @@ function build_react() {
     'src_react/util.js',
     'src_react/components/home_button.jsx',
     'src_react/components/dispatcher.js',
+    'src_react/components/user_search_widget.jsx',
     'src_react/components/add_store.jsx',
     'src_react/components/add_transaction.jsx',
     'src_react/components/transaction_view_detail.jsx',

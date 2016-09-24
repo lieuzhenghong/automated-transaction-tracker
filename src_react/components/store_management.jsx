@@ -21,21 +21,17 @@ class Store_Management_Page extends React.Component {
       status_message: ''
     };
     this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
-    this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleUsers = this.handleUsers.bind(this);
   }
   componentWillReceiveProps(nextprops) {
-    console.log(`prop changed: ${nextprops.active_page}`);
     if (nextprops.active_page != 'Store_Management_Page') {
     }
     else {
-      console.log('componentWillReceiveProps called');
       var req = new XMLHttpRequest();
-      req.open('GET', `/user/${localStorage.getItem('_user_id')}
-      /store/${nextprops.active_store._id}/manage`);
-      console.log(set_HTTP_header(req));
-      console.log(req);
+      req.open('GET', `/user/${localStorage.getItem('_user_id')}/store/${nextprops.active_store._id}/manage`);
+      req = set_HTTP_header(req);
       req.onreadystatechange = () => {
         if (req.readyState == 4) {
           var res = JSON.parse(req.responseText);
@@ -50,29 +46,20 @@ class Store_Management_Page extends React.Component {
             owner: res[1],
             contributors: res[2]
           });
-          console.log(this.state);
         }
       };
       req.send();
     }
   }
-  handleClick(e) {
-    console.log('clicked');
-    let clicked = e.target.parentNode.id;
-    //console.log(this.state.output_content[clicked]);
-    if (this.state.contributors_ids.indexOf(this.state.output_content[clicked]._id) != -1) {
-      console.log('contributor already exists');
-    }
-    else {
-      this.state.contributors.push(this.state.output_content[clicked]);
-      this.state.contributors_ids.push(this.state.output_content[clicked]._id);
-      this.setState({
-        contributors_id: this.state.contributors_id,
-        contributors: this.state.contributors
-      });
-      console.log(this.state.contributors);
-    }
+
+  handleUsers(users, user_ids) {
+    console.log('handleUsers function called');
+    this.setState({
+      contributors_ids: user_ids,
+      contributors: users
+    })
   }
+
   handleChange(key) {
     return (e) => {
       if (key === 'contributors') {
@@ -137,6 +124,7 @@ class Store_Management_Page extends React.Component {
       rows.push(
           <tr
           id={i}
+          key={`tr=${i}`}
           onClick={this.handleClick}>
           <td>{c[i].username}</td>
           <td>{c[i].phone_number}</td>
@@ -148,7 +136,7 @@ class Store_Management_Page extends React.Component {
 
     for (let i = 0; i < d.length; i++) {
       contributors.push(
-          <li id={i}>
+          <li id={i} key={`list-${i}`}>
             {d[i].username}
             </li>
       );
@@ -182,28 +170,7 @@ class Store_Management_Page extends React.Component {
           onChange={this.handleChange('name')}
           />
 
-        <div id = 'search'>
-        <label htmlFor ='search_contributors'>Contributors</label>
-
-        <ul>
-        {contributors}
-        </ul>
-
-        <input
-          id = 'search_contributors'
-          type='search' 
-          onChange={this.handleChange('contributors')} 
-        />
-        
-        <table id = "output_content">
-        <thead>
-        <tr> <td>Display name</td><td>Phone number</td></tr>
-        </thead>
-        <tbody>
-        {rows}
-        </tbody>
-        </table>
-        </div>
+        <User_Search_Widget users={this.state.contributors} passUsers={this.handleUsers}/>
           
         <input type='submit' value='Save changes' onClick={this.handleSubmit}/>
         </form>
