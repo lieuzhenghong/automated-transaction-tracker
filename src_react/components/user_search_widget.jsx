@@ -1,5 +1,5 @@
 /*global React*/
-/*global set_HTTP_header:true*/
+/*global make_request*/
 /*eslint no-undef: "error"*/
 /*eslint no-console: "off"*/
 /*eslint-env node*/
@@ -8,18 +8,14 @@ class User_Search_Widget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      users : [],
+      users: [],
       selected_users: [],
       selected_users_id: []        
     };
-    this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
   
-  componentWillReceiveProps(nextProps) {
-
-  }
   handleClick(e) {
     console.log('clicked');
     let clicked = e.target.parentNode.id;
@@ -67,43 +63,47 @@ class User_Search_Widget extends React.Component {
   render() {
     var rows = [];
     let c = this.state.users;
-
+    
     if (c === undefined) {
-      console.log(`this.state.users is ${this.state.users}`);
       return(null);
     }
     else {
       for (let i = 0; i < c.length; i++) {
         rows.push(
-              <tr
-              id={i}
-              key={i}
-              onClick={this.handleClick}>
-              <td>{c[i].username}</td>
-              <td>{c[i].phone_number}</td>
-              </tr>);
+            <tr
+            id={i}
+            key={i}
+            onClick={this.handleClick}>
+            <td>{c[i].username}</td>
+            <td>{c[i].phone_number}</td>
+            </tr>);
       }
       return (
-          <div id = 'search'>
-          <label htmlFor ='search_users'>Users</label>
+        <div id = 'search'>
+        <label htmlFor ='search_users'>Users</label>
 
 
 
-          <table id = "output_content">
-          <thead>
-          <tr><td>Display name</td><td>Phone number</td></tr>
-          </thead>
-          <tbody>
-          {rows}
-          </tbody>
-          </table>
-          <input
-              id = 'search_users'
-              type='search' 
-              onChange={this.handleChange('users')} 
-          />
-          </div>
-      );
+        <table id = "output_content">
+        <thead>
+        <tr><td>Display name</td><td>Phone number</td></tr>
+        </thead>
+        <tbody>
+        {rows}
+        </tbody>
+        </table>
+        <input
+            id = 'search_users'
+            type='search' 
+            onChange={this.handleChange('users')} 
+        />
+        </div>
+    );
     }
   }
 }
+
+User_Search_Widget.propTypes = {
+  owner: React.PropTypes.object.isRequired,
+  passUsers: React.PropTypes.func.isRequired
+};

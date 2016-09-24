@@ -14,7 +14,7 @@ class Store_Management_Page extends React.Component {
       //these fields 
       _id: '',
       name: '',
-      owner: [],
+      owner: {},
       contributors_ids: [],
       contributors: [],
       output_content: [],
@@ -170,7 +170,7 @@ class Store_Management_Page extends React.Component {
           onChange={this.handleChange('name')}
           />
 
-        <User_Search_Widget owner={this.state.owner} users={this.state.contributors} passUsers={this.handleUsers}/>
+        <User_Search_Widget owner={this.state.owner} passUsers={this.handleUsers}/>
           
         <input type='submit' value='Save changes' onClick={this.handleSubmit}/>
         </form>
