@@ -1,5 +1,12 @@
 # SMS Reminder Service
 
+I wrote this SMS Reminder service as my WITS project. My unit loans a lot of
+items every month and borrowers often forget to return their item. This service
+is able to send an SMS to the borrower (and to my superior) to remind them to
+return their items automatically.
+
+I used a third-party service, Twilio, to send the SMSes.
+
 **version 0.20**
 
 Version 0.20 is the second version ready to be deployed. Here is the current
