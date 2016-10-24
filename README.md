@@ -1,5 +1,7 @@
 # SMS Reminder Service
 
+See the app [here](https://loan-tracker.herokuapp.com/).
+
 I wrote this SMS Reminder service as my WITS project. My unit loans a lot of
 items every month and borrowers often forget to return their item. This service
 is able to send an SMS to the borrower (and to my superior) to remind them to

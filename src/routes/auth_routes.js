@@ -77,6 +77,7 @@ auth_routes.post('/sign_up', (req, res) => {
 
   User.findOne({phone_number: req.body.phone_number}, (err, phone_number)=>{
     if (err) throw err;
+    res.json({success: false, message: '<a href="login.html"> Try logging in again.</a>'})
 
     if (phone_number) {
       res.json({success: false, message: 'Phone number already exists.'});
