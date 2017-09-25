@@ -9,34 +9,28 @@ return their items automatically.
 
 I used a third-party service, Twilio, to send the SMSes.
 
-**version 0.20**
-
-Version 0.20 is the second version ready to be deployed. Here is the current
-feature set as of this version:
-
 ## Feature showcase
 
-### Searching for a user in a store:
+### Search by rank, name or phone number:
 
 ![search_user](https://thumbs.gfycat.com/PositiveUnawareCub-size_restricted.gif)
 
-### Adding a new loan:
+### Add a new loan in seconds:
 
 ![addloan](https://thumbs.gfycat.com/ActiveHealthyImago-size_restricted.gif)
 
-## New features:
+### SMSes are automatically sent:
+
+![auto_sms](/docs/img/sms_reminder.jpg)
+
+## Features:
 
 * Signup and login feature
-  * Change phone number, password, username
-
+  * Change phone number, password, display name
 * Add new stores
   * Choose contributors (only contributors can access your stores)
-
 * Edit stores
   * Rename store, add contributors
-
-## Features in v0.10:
-
 * Add new loan with fields:
   * Name
   * Phone number
