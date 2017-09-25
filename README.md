@@ -18,14 +18,9 @@ feature set as of this version:
 
 Searching for a user in a store:
 
-<div style='position:relative;padding-bottom:54%'><iframe
-src='https://gfycat.com/ifr/PositiveUnawareCub' frameborder='0' scrolling='no'
-width='100%' height='100%' style='position:absolute;top:0;left:0'
-allowfullscreen></iframe></div>
+![search_user](https://thumbs.gfycat.com/PositiveUnawareCub-size_restricted.gif)
 
-Adding a new loan:
-
-<div style='position:relative;padding-bottom:54%'><iframe src='https://gfycat.com/ifr/ActiveHealthyImago' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0' allowfullscreen></iframe></div>
+### Adding a new loan:
 
 ![addloan](https://thumbs.gfycat.com/ActiveHealthyImago-size_restricted.gif)
 
