@@ -13,15 +13,19 @@ I used a third-party service, Twilio, to send the SMSes.
 
 ### Search by rank, name or phone number:
 
-![search_user](https://thumbs.gfycat.com/PositiveUnawareCub-size_restricted.gif)
+<img src= "https://thumbs.gfycat.com/PositiveUnawareCub-size_restricted.gif"
+width = "500">
 
 ### Add a new loan in seconds:
 
-![addloan](https://thumbs.gfycat.com/ActiveHealthyImago-size_restricted.gif)
+<img src= "https://thumbs.gfycat.com/ActiveHealthyImago-size_restricted.gif"
+width = "500">
 
 ### SMSes are automatically sent:
 
-![auto_sms](/docs/img/sms_reminder.jpg)
+<img src= "/docs/img/sms_reminder.jpg"
+width = "500">
+/*![auto_sms](/docs/img/sms_reminder.jpg)*/
 
 ## Features:
 
