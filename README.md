@@ -25,11 +25,17 @@ width = "500">
 
 <img src= "/docs/img/sms_reminder.jpg"
 width = "500">
-/*![auto_sms](/docs/img/sms_reminder.jpg)*/
 
 ## Features:
 
-* Signup and login feature
+* Automated SMS sending to borrower when the following events occur:
+  * A loan is made
+  * A loan is renewed
+  * A loan is returned
+  * Seven (7) days before loan expiry
+  * Three (3) days before loan expiry
+  * Loan expires
+* Signup and login
   * Change phone number, password, display name
 * Add new stores
   * Choose contributors (only contributors can access your stores)
@@ -45,19 +51,12 @@ width = "500">
   * Expiry date
   * Name
   * Phone number
-* Show loan **in detail** with fields:
+* Show loan in detail with fields:
   * Date
   * Expiry date
   * Returned (Boolean)
   * Name
-  * Items (item name, item amount)
-  * **Return items button**
-  * **Renew loan button**
-* Automated SMS sending to borrower when the following events occur:
-  * A loan is made
-  * A loan is renewed
-  * A loan is returned
-  * Seven (7) days before loan expiry
-  * Three (3) days before loan expiry
-  * Loan expires
+  * ~~Items (item name, item amount)~~ **not shown; items may be sensitive**
+  * Return items button
+  * Renew loan button
 
