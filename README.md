@@ -16,7 +16,7 @@ feature set as of this version:
 
 ## Feature showcase
 
-Searching for a user in a store:
+### Searching for a user in a store:
 
 ![search_user](https://thumbs.gfycat.com/PositiveUnawareCub-size_restricted.gif)
 
