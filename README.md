@@ -27,6 +27,8 @@ Adding a new loan:
 
 <div style='position:relative;padding-bottom:54%'><iframe src='https://gfycat.com/ifr/ActiveHealthyImago' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0' allowfullscreen></iframe></div>
 
+![addloan](https://thumbs.gfycat.com/ActiveHealthyImago-size_restricted.gif)
+
 ## New features:
 
 * Signup and login feature
